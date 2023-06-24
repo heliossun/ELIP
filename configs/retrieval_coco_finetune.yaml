@@ -1,0 +1,36 @@
+image_root: '../data/coco2014/images'
+image_root2017_val: '../data/coco/images/val2017'
+image_root2017_train: '../data/coco/images/train2017'
+ann_root2017: '../data/coco/annotations'
+ann_root: '../data/coco2014/annotations'
+dataset: 'coco'
+
+# set pretrained as a file path or an url
+#output/ELIP-L-noGC/checkpoint_best.pth
+pretrained: 'output/elip-relu/checkpoint_best.pth'
+pretrain_clip: 'ViT-L/14'
+# size of vit model; base or large
+
+batch_size_train: 40
+batch_size_test: 500
+vit_grad_ckpt: True
+vit_ckpt_layer: 4
+init_lr: 5e-4
+image_size: 224
+negative_all_rank: True
+n_gpu: 2
+
+# optimizer
+weight_decay: 0.02
+min_lr: 4e-4
+max_epoch: 10
+local_loss: False
+gather_with_grad: True
+evidential: True
+warmup_steps: 400
+grad_clip_norm: 5.0
+
+#adapter
+adapter: True
+va: True
+ta: True

@@ -30,7 +30,7 @@ class coco_train(Dataset):
            
         
     def __len__(self):
-        return len(self.ids)//50
+        return len(self.ids)
     
     def __getitem__(self, index):    
         ann_id = self.ids[index]

@@ -58,7 +58,7 @@ class coco_karpathy_caption_eval(Dataset):
         '''
         urls = {'val':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json',
                 'test':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json'}
-        filenames = {'val':'coco_karpathy_val_a3.json','test':'coco_karpathy_test.json'}
+        filenames = {'val':'coco_karpathy_val.json','test':'coco_karpathy_test.json'}
         
         download_url(urls[split],ann_root)
         
@@ -91,7 +91,7 @@ class coco_karpathy_retrieval_eval(Dataset):
         '''
         urls = {'val':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json',
                 'test':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json'}
-        filenames = {'val':'coco_karpathy_val_a3.json','test':'coco_karpathy_test_a3.json'}
+        filenames = {'val':'coco_karpathy_val.json','test':'coco_karpathy_test.json'}
         
         #download_url(urls[split],ann_root)
         

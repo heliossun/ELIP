@@ -29,12 +29,12 @@ min_lr: 0
 max_epoch: 15
 local_loss: False
 gather_with_grad: True
-evidential: True
+evidential: False
 warmup_steps: 1000
 grad_clip_norm: 5.0
 
 
 #adapter
-va: False
+va: True
 ta: True
 

@@ -66,6 +66,7 @@ def relu_evidence(y):
 
 
 def exp_evidence(y):
+    #return torch.exp(y)
     return torch.exp(torch.clamp(y, -10, 10))
 
 

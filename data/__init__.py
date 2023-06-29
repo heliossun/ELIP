@@ -79,7 +79,7 @@ def create_dataset(dataset, config, min_scale=0.5,noise='c'):
     
     elif dataset=='retrieval_flickr':          
         train_dataset = flickr30k_train(transform_train, config['image_root'], config['ann_root'])
-        val_dataset = flickr30k_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'val') 
+        val_dataset = flickr30k_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'test') 
         test_dataset = flickr30k_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'test')          
         return train_dataset, val_dataset, test_dataset     
     

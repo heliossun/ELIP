@@ -35,6 +35,6 @@ grad_clip_norm: 5.0
 
 
 #adapter
-va: False
-ta: True
+va: True
+ta: False
 

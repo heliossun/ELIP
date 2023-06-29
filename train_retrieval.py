@@ -22,7 +22,7 @@ from utils import cosine_lr_schedule
 from data import create_dataset, create_sampler, create_loader
 from models.loss_ev import EVLoss
 from models.sched import get_lr_sched
-NUM_ACCUMULATION_STEPS = 2
+NUM_ACCUMULATION_STEPS = 1
 
 def build_loss(config):
     loss = EVLoss(
@@ -71,20 +71,15 @@ def train(model,loss, data_loader, optimizer, epoch, global_step, device, config
     return {k: "{:.3f}".format(meter.global_avg) for k, meter in metric_logger.meters.items()},global_step
 
 @torch.no_grad()
-def compute_entropy(sims_i2t, sims_t2i,ranks_i2t,ranks_t2i):
-    
-    #alpha_i2t=np.maximum(0,sims_i2t)
-    #alpha_t2i=np.maximum(0,sims_t2i)
-    alpha_i2t=np.exp(sims_i2t)+1
-    alpha_t2i=np.exp(sims_t2i)+1
-    #print("i2t shape:",alpha_i2t.shape)
+def compute_entropy(scores_i2t, scores_t2i,ranks_i2t,ranks_t2i):
+    #print("i2t shape:",scores_i2t.shape)
     #print("t2i shape:",scores_t2i.shape)
-    class_num=alpha_i2t.shape[0]
+    class_num=scores_i2t.shape[0]
     
     #generate mask to make 1 image -> 1 text, used to be 1 image for 5 caption
     # if scores_i2t.shape[0]!=scores_i2t.shape[1]:   
     oneCap4Img=[]
-    for i in range(alpha_i2t.shape[0]-1):
+    for i in range(scores_i2t.shape[0]-1):
         randidx=random.randint(0,4)
         oneCap4Img.append(i*5+randidx)
     #     mask_i2t=np.zeros(scores_i2t.shape)
@@ -97,21 +92,19 @@ def compute_entropy(sims_i2t, sims_t2i,ranks_i2t,ranks_t2i):
     #     mask_i2t=np.ones(scores_i2t.shape)
     #     mask_t2i=mask_i2t
     
-    #alpha_i2t=np.exp(scores_i2t*100)+1
+    alpha_i2t=np.exp(scores_i2t*100)+1
     alpha_i2t=alpha_i2t[:,oneCap4Img]
     s_i2t=np.sum(alpha_i2t, axis=1, keepdims=False)
-    #alpha_t2i=np.exp(scores_t2i*100)+1
-    alpha_t2i=alpha_t2i[oneCap4Img,:]
-    ranks_t2i=ranks_t2i[oneCap4Img]
+    alpha_t2i=np.exp(scores_t2i*100)+1
     s_t2i=np.sum(alpha_t2i, axis=1, keepdims=False)
 
-    s_i2t=s_i2t[np.where(ranks_i2t < 10)[0]]
+    s_i2t=s_i2t[np.where(ranks_i2t < 5)[0]]
     
-    s_t2i=s_t2i[np.where(ranks_t2i < 10)[0]]
+    s_t2i=s_t2i[np.where(ranks_t2i < 5)[0]]
     return class_num/np.array(s_i2t), class_num/np.array(s_t2i)
 
 @torch.no_grad()
-def evaluation(model, data_loader, device,evidential=True):
+def evaluation(model, data_loader, device, config):
     # test
     model.eval() 
     
@@ -145,13 +138,12 @@ def evaluation(model, data_loader, device,evidential=True):
    
     image_embeds = torch.cat(image_embeds,dim=0)
     
-    sims_i2t = 100*image_embeds @ text_embeds.t()
-    sims_t2i = 100*text_embeds @ image_embeds.t()
-    
+    sims_i2t = image_embeds @ text_embeds.t()
+    sims_t2i = text_embeds @ image_embeds.t()
     return sims_i2t.cpu().numpy(), sims_t2i.cpu().numpy()
 
 @torch.no_grad()
-def oodEval(model_without_ddp, device, OODS,evidential=True):
+def oodEval(model_without_ddp, device, OODS):
      for noise in OODS: 
         train_dataset, val_dataset, test_dataset = create_dataset('retrieval_%s'%config['dataset'], config, noise=noise)  
 
@@ -166,10 +158,10 @@ def oodEval(model_without_ddp, device, OODS,evidential=True):
                                                             num_workers=[4,4,4],
                                                             is_trains=[True, False, False], 
                                                             collate_fns=[None,None,None])
-        score_val_i2t, score_val_t2i, = evaluation(model_without_ddp, val_loader, device,evidential=evidential)
+        score_val_i2t, score_val_t2i, = evaluation(model_without_ddp, val_loader, device, config)
         
         if utils.is_main_process():  
-            val_result,u_i2t,u_t2i = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt)  
+            val_result,u_i2t,u_t2i,top1_i2t,top1_t2i = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt,val_loader)  
             
             print(val_result)              
             log_stats = {**{f'val_{k}': v for k, v in val_result.items()},}
@@ -183,12 +175,23 @@ def oodEval(model_without_ddp, device, OODS,evidential=True):
             for i in u_t2i:
                 f.write('{:.2f}\n'.format(float(i)))
             f.close()    
+            f = open(os.path.join(args.output_dir,f"top1R_{noise}_i2t.txt"), "w")
+            for i in top1_i2t:
+                f.write(f'{i}\n')
+            f.close()    
+            f = open(os.path.join(args.output_dir,f"top1R_{noise}_t2i.txt"), "w")
+            for i in top1_t2i:
+                f.write(f'{i}\n')
+            f.close()    
 
 @torch.no_grad()
-def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt):
+def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt, data_loader):
     
     #Images->Text 
+    texts = data_loader.dataset.text 
+    imgs = data_loader.dataset.image
     ranks = np.zeros(scores_i2t.shape[0])
+    top1_i2t=[]
     for index,score in enumerate(scores_i2t):
         inds = np.argsort(score)[::-1]
         # Score
@@ -198,7 +201,7 @@ def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt):
             if tmp < rank:
                 rank = tmp
         ranks[index] = rank
-
+        top1_i2t.append((imgs[index],texts[inds[0]]))
     # Compute metrics
     tr1 = 100.0 * len(np.where(ranks < 1)[0]) / len(ranks)
     tr5 = 100.0 * len(np.where(ranks < 5)[0]) / len(ranks)
@@ -206,11 +209,11 @@ def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt):
     
     #Text->Images 
     ranks2 = np.zeros(scores_t2i.shape[0])
-    
+    top1_t2i=[]
     for index,score in enumerate(scores_t2i):
         inds = np.argsort(score)[::-1]
         ranks2[index] = np.where(inds == txt2img[index])[0][0]
-
+        top1_t2i.append((texts[index],imgs[inds[0]]))
     # Compute metrics
     ir1 = 100.0 * len(np.where(ranks2 < 1)[0]) / len(ranks2)
     ir5 = 100.0 * len(np.where(ranks2 < 5)[0]) / len(ranks2)
@@ -234,7 +237,7 @@ def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt):
                     'img_r_mean': ir_mean,
                     'r_mean': r_mean,
                     'u_t2i': float(np.mean(u_t2i))}
-    return eval_result,u_i2t,u_t2i
+    return eval_result,u_i2t,u_t2i,top1_i2t,top1_t2i
 
 def main(args, config):
     utils.init_distributed_mode(args)    
@@ -304,46 +307,45 @@ def main(args, config):
         if not args.evaluate:        
             if args.distributed:
                 train_loader.sampler.set_epoch(epoch)
-            train_stats, global_step = train(model,loss, train_loader, optimizer, epoch, global_step, device, config, args)
-            if epoch > 19 == 0:    
-                score_val_i2t, score_val_t2i, = evaluation(model_without_ddp, val_loader, device,config['evidential'])
-                print("score i2t:",score_val_i2t.shape)
-                print("score t2i:",score_val_t2i.shape)
-                if utils.is_main_process():  
-            
-                    val_result,_,_ = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt)  
-                    print(val_result)
-                                        
-                    if val_result['r_mean']>best:
-                        save_obj = {
-                            'model': model_without_ddp.state_dict(),
-                            'optimizer': optimizer.state_dict(),
-                            'config': config,
-                            'epoch': epoch,
-                        }
-                        torch.save(save_obj, os.path.join(args.output_dir, 'checkpoint_best.pth'))  
-                        best = val_result['r_mean']        
-                        best_epoch = epoch  
+            train_stats, global_step = train(model,loss, train_loader, optimizer, epoch, global_step, device, config, args)   
+            score_val_i2t, score_val_t2i, = evaluation(model_without_ddp, val_loader, device, config)
+            print("score i2t:",score_val_i2t.shape)
+            print("score t2i:",score_val_t2i.shape)
+            if utils.is_main_process():  
         
-                    
-                    if args.evaluate:                
-                        log_stats = {**{f'val_{k}': v for k, v in val_result.items()},                
-                                    }
-                        with open(os.path.join(args.output_dir, "evaluate.txt"),"a") as f:
-                            f.write(json.dumps(log_stats) + "\n")     
-                    else:
-                        log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
-                                    **{f'val_{k}': v for k, v in val_result.items()}, 
-                                    'epoch': epoch,
-                                    'best_epoch': best_epoch,
-                                    }
-                        with open(os.path.join(args.output_dir, "log.txt"),"a") as f:
-                            f.write(json.dumps(log_stats) + "\n")   
+                val_result,_,_,_,_ = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt, val_loader)  
+                print(val_result)
+                                    
+                if val_result['r_mean']>best:
+                    save_obj = {
+                        'model': model_without_ddp.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'config': config,
+                        'epoch': epoch,
+                    }
+                    torch.save(save_obj, os.path.join(args.output_dir, 'checkpoint_best.pth'))  
+                    best = val_result['r_mean']        
+                    best_epoch = epoch  
+    
+                
+                if args.evaluate:                
+                    log_stats = {**{f'val_{k}': v for k, v in val_result.items()},                
+                                }
+                    with open(os.path.join(args.output_dir, "evaluate.txt"),"a") as f:
+                        f.write(json.dumps(log_stats) + "\n")     
+                else:
+                    log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
+                                **{f'val_{k}': v for k, v in val_result.items()}, 
+                                'epoch': epoch,
+                                'best_epoch': best_epoch,
+                                }
+                    with open(os.path.join(args.output_dir, "log.txt"),"a") as f:
+                        f.write(json.dumps(log_stats) + "\n")   
                        
         if args.evaluate: 
             print(">>>Evaluating ID & OOD cases<<<")
             noises=['c','g','r']
-            oodEval(model_without_ddp,device,noises,config['evidential'])
+            oodEval(model_without_ddp,device,noises)
             break
 
         dist.barrier()     

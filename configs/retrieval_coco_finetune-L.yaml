@@ -6,35 +6,31 @@ ann_root: '/home/gs4288/guohao/data/coco2014/annotations'
 dataset: 'coco'
 
 # set pretrained as a file path or an url
-#output/ELIP-L-noGC/checkpoint_best.pth
-pretrained: '/home/gs4288/guohao/ELIP/ckpt/model_base_retrieval_coco.pth'
+# /home/gs4288/guohao/ELIP/output/elip-L-4gpu/checkpoint_best.pth
+pretrained: ''
+pretrain_clip: 'ViT-L/14'
+# size of vit model; base or large
 
-
-vit: 'base'
-batch_size_train: 50
-batch_size_test: 300
+batch_size_train: 70
+batch_size_test: 400
 vit_grad_ckpt: True
 vit_ckpt_layer: 4
-init_lr: 5e-6
-image_size: 384
-queue_size: 200
-alpha: 0
-k_test: 256
+init_lr: 5e-5
+image_size: 224
 negative_all_rank: True
 n_gpu: 4
 
 # optimizer
 weight_decay: 0.02
-min_lr: 0
-max_epoch: 15
+min_lr: 8e-5
+max_epoch: 30
 local_loss: False
 gather_with_grad: True
 evidential: True
-warmup_steps: 1000
+warmup_steps: 600
 grad_clip_norm: 5.0
 
-
 #adapter
-va: False
+adapter: True
+va: True
 ta: True
-

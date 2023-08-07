@@ -105,9 +105,29 @@ Experiment 1: We choose three **OOD-image** settings from mentioned in <https://
 |     BLIP-ft    | 30.7     | 52.2      | 61.0     | 58.3     | 80.5     | 87.1     | **77.5** | **93.2** | 96.4     |
 |     ELIP       | **38.7** | **65.6**  | **75.6** | **60.3** | **83.7** | **90.6** | 76.4     | 93.1     | **96.4** |
 
-After testing on more complex OOD cases, we observe ELIP surpasses other baselines in most strong OOD settings.
+After testing on more complex image-OOD cases, we observe ELIP surpasses other baselines in most strong OOD settings.
 
 Experiment 2: We choose three **OOD-text** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
+
+| **Image Retrieval** |          |              |          |          |          |          |      |            |      |
+|---------------------|----------|--------------|----------|----------|----------|----------|------|------------|------|
+|                     |          | **Keyboard** |          |          | **SR**   |          |      | **Formal** |      |
+|                     | R@1      | R@5          | R@10     | R@1      | R@5      | R@10     | R@1  | R@5        | R@10 |
+|     CLIP-zs         | 21.0     | 41.2         | 51.6     | 29.2     | 53.0     | 63.6     | 36.4 | 60.9       | 70.8 |
+|     ALBEF-ft        | 38.0     | 63.4         | 73.0     | 52.4     | 77.7     | 85.5     | 60.2 | 83.9       | 90.3 |
+|     BLIP-ft         | **42.7** | **67.5**     | **76.6** | 55.5     | 79.5     | 86.7     | 63.5 | 85.3       | 91.2 |
+|     ELIP            | 36.8     | 61.3         | 71.0     | **56.2** | **80.0** | **87.5** |      |            |      |
+
+| **Text Retrieval** |          |              |          |          |          |          |          |            |          |
+|--------------------|----------|--------------|----------|----------|----------|----------|----------|------------|----------|
+|                    |          | **Keyboard** |          |          | **SR**   |          |          | **Formal** |          |
+|                    | R@1      | R@5          | R@10     | R@1      | R@5      | R@10     | R@1      | R@5        | R@10     |
+|     CLIP-zs        | 36.8     | 62.1         | 72.8     | 47.0     | 72.8     | 81.8     | 56.8     | 80.4       | 87.7     |
+|     ALBEF-ft       | 57.9     | 82.6         | 89.6     | 70.1     | 90.6     | 95.1     | 77.6     | 94.1       | 97.0     |
+|     BLIP-ft        | **64.1** | **86.4**     | **91.9** | **74.2** | **92.4** | **96.1** | **81.7** | **95.2**   | **97.6** |
+|     ELIP           | 58.2     | 82.5         | 89.5     | 73.0     | 91.7     | 95.9     |          |            |          |
+
+After testing on different type of text OOD-cases, we found ELIP surpasses other baselines in word (SR) and sentence (formal) level perturbation, but downperform in character level perturbation.
 
 ## Reviewer 3
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?

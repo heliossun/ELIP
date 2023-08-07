@@ -111,7 +111,7 @@ Experiment 2: We choose three **OOD-text** settings from mentioned in <https://a
 
 ## Reviewer 3
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?
-A3.1
+A3.1 
 
 R3.2 Can you expand on the role of Subjective Logic in quantifying uncertainty in this context?
 A3.2
@@ -120,10 +120,10 @@ R3.3 How is the belief mass calculated for each singleton in Subjective Logic, a
 A3.3
 
 R3.4 What is the significance of assigning the similarity vector ρ as the general representation for ρi2t and ρt2i?
-A3.4
+A3.4 ρi2t and ρt2i follow the same rule, as described in Equation 6 and Equation 7. Using ρ in both equations enhances clarity and consistency.
 
 R3.5 In line 120, v_{cls} is not text embeddings, so it would be good to rephrase the sentence.
-A3.5
+A3.5 In line 120, v_{cls} means iamge token.
 
 R3.6 In line 189, "object" should be "objective".
 ## Reviewer 4
@@ -160,11 +160,45 @@ After testing on more complex OOD cases, we observe ELIP surpasses other baselin
 Experiment 2: We choose three **OOD-text** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
 
 R4.4 Typo: Line 167 should be “Equation”.
-
+A4.4 
 ## Reviewer 5
 
-A5.1 What is the key component in improving the OOD robustness of VL models? Is it finetuning with adapters or introducing the evidential uncertainty?
-R5.1 
-A5.2 Why does the proposed ELIP underperform in the OOD text?
+R5.1 What is the key component in improving the OOD robustness of VL models? Is it finetuning with adapters or introducing the evidential uncertainty?
+A5.1 We did ablation study to analyze the effectiveness of each component. 
 
+|             | Text Retrieval    |      |      |      |         |           | Image Retrieval   |      |      |      |         |           |
+|-------------|:-----------------:|------|------|------|---------|-----------|-------------------|------|------|------|---------|-----------|
+|             | clean             |      | OOD  |      | OOD_avg | MMI       | clean             |      | OOD  |      | OOD_avg | MMI       |
+|             | R@1               | R@1  | R@1  | R@1  | R@1     |           | R@1               | R@1  | R@1  | R@1  | R@1     |           |
+| ELIP w/o A  | 60.2              | 51.7 | 49.8 | 43.1 | 48.2    | &darr;19.9%     | 44.5              | 38.4 | 36.1 | 30.6 | 35.0    | &darr;21.3%     |
+| ELIP w/o IA | 71.3              | 62.1 | 63.8 | 55.1 | 60.3    | &darr;15.4%     | 52.8              | 45.6 | 44.3 | 38.1 | 42.7    | &darr;19.2%     |
+| ELIP w/o TA | 76.6              | 63.8 | 68.0 | 55.6 | 62.5    | &darr;18.5%     | 60.1              | 51.0 | 51.5 | 42.3 | 48.3    | &darr;19.7%     |
+| ELIP w/o Ev | 76.7              | 64.3 | 70.5 | 58.2 | 64.3    | &darr;16.1%     | 60.3              | 51.4 | 51.9 | 43.3 | 48.9    | &darr;19.0%     |
+| ELIP        | 77.5              | 66.3 | 71.3 | 60.0 | 65.9    | &darr;**15.0%** | 60.4              | 51.5 | 52.3 | 43.7 | 49.2    | &darr;**18.6%** |
+
+R5.2 Why does the proposed ELIP underperform in the OOD text?
+A5.2 The primary focus of our research is centered around two key objectives: achieving deterministic uncertainty estimation and enhancing model robustness in out-of-distribution (OOD) cases. In Table 1, our method, ELIP, exhibits remarkable performance, surpassing BLIP-ft in both OOD-image and OOD-image&text scenarios. This achievement is particularly noteworthy as we fine-tuned a significantly smaller subset of parameters (65M) compared to BLIP, which utilizes a more complex structure and fine-tunes the entire model. Instead of a direct retrieval accuracy comparison, we adopt a reference paper [1]: <https://arxiv.org/pdf/2212.08044.pdf> suggested by reviewer 5LZy to ensure a more reasonable and objective evaluation. After reading, we found one benchmark named MultiModal Impact score, which can be used to analyze our existing experiment results, since **MMI** is used to easure the relative performance drop between the ID and OOD performance.
+Here is the MMI comparision based on our existing results:
+
+| **Image Retrieval** |      |           |      |      |                 |      |           |           |          |
+|---------------------|------|-----------|------|------|-----------------|------|-----------|-----------|----------|
+|                     |      | **Clean** |      |      | **Average OOD** |      |           | **MMI**   |          |
+|                     | R@1  | R@5       | R@10 | R@1  | R@5             | R@10 | R@1       | R@5       | R@10     |
+|     CLIP-zs         | 35.3 | 60.0      | 70.2 | 27.4 | 50.5            | 61.2 | &darr;22.3%     | &darr;15.8%     | &darr;12.9%    |
+|     ALBEF-ft        | 60.7 | 84.3      | 90.5 | 47.0 | 71.5            | 80.2 | &darr;22.6%     | &darr;15.2%     | &darr;11.4%    |
+|     BLIP-ft         | 64.3 | 85.7      | 91.5 | 51.3 | 74.5            | 82.2 | &darr;20.3%     | &darr;13.0%     | &darr;10.1%    |
+|     ELIP            | 60.4 | 83.9      | 90.5 | 49.2 | 74.4            | 83.0 | &darr;**18.6%** | &darr;**11.3%** | &darr;**8.3%** |
+| ELIP+               | 63.7 | 85.4      | 91.3 | 51.2 | 74.6            | 82.4 | &darr;**19.6%** | &darr;**12.6%** | &darr;**9.7%** |
+
+| **Text Retrieval** |      |           |      |      |                 |      |           |           |          |
+|--------------------|------|-----------|------|------|-----------------|------|-----------|-----------|----------|
+|                    |      | **Clean** |      |      | **Average OOD** |      |           | **MMI**   |          |
+|                    | R@1  | R@5       | R@10 | R@1  | R@5             | R@10 | R@1       | R@5       | R@10     |
+|     CLIP-zs        | 56.0 | 79.6      | 86.9 | 43.0 | 58.4            | 77.8 | &darr;23.3%     | &darr;26.7%     | &darr;10.5%    |
+|     ALBEF-ft       | 77.6 | 94.3      | 97.2 | 61.8 | 81.9            | 87.5 | &darr;20.3%     | &darr;13.1%     | &darr;9.9%     |
+|     BLIP-ft        | 81.9 | 95.4      | 97.8 | 67.0 | 85.1            | 89.9 | &darr;18.2%     | &darr;10.8%     | &darr;8.1%     |
+|     ELIP           | 77.5 | 94.2      | 97.0 | 65.9 | 86.3            | 91.8 | &darr;**15.0%** | &darr;**8.4%**  | &darr;**5.4%** |
+| ELIP+              | 81.3 | 95.2      | 97.7 | 66.9 | 85.0            | 89.8 | &darr;**17.7%** | &darr;**10.7%** | &darr;**8.1%** |
+
+We have observed that ELIP and ELIP+ outperform all other baseline models on the MMI benchmark, demonstrating the effectiveness of our method in simple OOD settings.
 

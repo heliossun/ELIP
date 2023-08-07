@@ -38,11 +38,48 @@ A1.2 ELIP is a double stream encoder-based structured, in Fig.3 you can follow t
 Specifically, **training**: input (image-text pair) &rarr; image & text encoder &rarr; feature output alignment &rarr; evidencial learning;
 **inference**: input (image & text) &rarr; image & text encoder &rarr; feature output alignment &rarr; retrieval & uncertainty estimation.
 
+## Reviewer 2
+R2.1 The authors may want to re-evaluate the contributions of this paper. The technical contribution seems limited, both adapters and evidential loss are well-explored and readily available in the literature.
 
+A2.1 
 
+R2.2 The authors may want to explain why the proposed approach performs worse than the baseline BLIP+ft in many settings (see Table 1).
+A2.2
 
+R2.3 The author may want to further explain why the evidential loss seems to have little effect in the ablation study (see Table 3), which is the key innovation of this paper.
+A2.3
 
-To validate our method's ability to handle more complex and diverse OOD cases, we followed the same reference and generated different sets of perturbated images and texts.
+R2.4 The experiments are insufficient. The authors may want to compare the proposed model with baselines on more settings, such as changing the proportion of random noise during OOD generation.
+
+A2.4
+
+## Reviewer 3
+R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?
+A3.1
+
+R3.2 Can you expand on the role of Subjective Logic in quantifying uncertainty in this context?
+A3.2
+
+R3.3 How is the belief mass calculated for each singleton in Subjective Logic, and what does it represent in the model's output?
+A3.3
+
+R3.4 What is the significance of assigning the similarity vector ρ as the general representation for ρi2t and ρt2i?
+A3.4
+
+R3.5 In line 120, v_{cls} is not text embeddings, so it would be good to rephrase the sentence.
+A3.5
+
+R3.6 In line 189, "object" should be "objective".
+## Reviewer 4
+
+R4.1 The OOD problem (Gaussian noise, image distortion, spelling errors) discussed in the article is not exclusive to image-text retrieval tasks but also exists in other tasks such as image captioning and image generation. Therefore, I think that the article's focus solely on image-text retrieval is insufficient.
+A4.1
+
+R4.2 The OOD settings discussed in the article are overly simplistic and may not adequately represent real-world scenarios. There seems to be a significant gap between the discussed settings and reality.
+A4.2
+
+R4.3 There is already existing article [1]: <https://arxiv.org/pdf/2212.08044.pdf> that propose benchmarks for similar OOD problems, with more complex settings. I recommend that the authors follow the settings provided in [1] to evaluate the performance of their method.
+A4.3 To validate our method's ability to handle more complex and diverse OOD cases, we followed the same reference and generated different sets of perturbated images and texts.
 Experiment 1: We choose three **OOD-image** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
 
 | Image Retrieval |      |           |      |      |      |      |      |      |      |
@@ -63,5 +100,16 @@ Experiment 1: We choose three **OOD-image** settings from mentioned in <https://
 |     BLIP-ft    | 30.7     | 52.2      | 61.0     | 58.3     | 80.5     | 87.1     | **77.5** | **93.2** | 96.4     |
 |     ELIP       | **38.7** | **65.6**  | **75.6** | **60.3** | **83.7** | **90.6** | 76.4     | 93.1     | **96.4** |
 
+After testing on more complex OOD cases, we observe ELIP surpasses other baselines in most strong OOD settings.
+
 Experiment 2: We choose three **OOD-text** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
+
+R4.4 Typo: Line 167 should be “Equation”.
+
+## Reviewer 5
+
+A5.1 What is the key component in improving the OOD robustness of VL models? Is it finetuning with adapters or introducing the evidential uncertainty?
+R5.1 
+A5.2 Why does the proposed ELIP underperform in the OOD text?
+
 

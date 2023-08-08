@@ -132,7 +132,7 @@ Experiment 2: We choose three **OOD-text** settings from mentioned in <https://a
 |     BLIP-ft        | **64.1** | **86.4**     | **91.9** | **74.2** | **92.4** | **96.1** | **81.7** | **95.2**   | **97.6** |
 |     ELIP           | 58.2     | 82.5         | 89.5     | 73.0     | 91.7     | 95.9     |   77.8       |    93.9        |    97.0      |
 
-After testing on different type of text OOD-cases, we found ELIP surpasses other baselines in word (SR) and sentence (formal) level perturbation, but downperform in character level perturbation.
+After testing on different type of text-OOD cases, we found ELIP doesn't perform as good as facing the image-OOD cases, this might because of the text augmentation techniques used in ALBEF and BLIP. However, ELIP was trained on clean data overall.
 
 Experiment 3: Besides retrieval accuracy, we also provide comparison results on MMI benchmark. For OOD retrieval, we average over 5 Image-OOD, 5 Text-OOD and 3 cross-OOD settings. 
 
@@ -153,6 +153,9 @@ Experiment 3: Besides retrieval accuracy, we also provide comparison results on 
 |     ALBEF-ft       | 77.6 | 94.3      | 97.2 | 60.8 | 81.5        | 87.3 | &darr;21.7%     | &darr;13.6%    | &darr;10.2%    |
 |     BLIP-ft        | 81.9 | 95.4      | 97.8 | 70.7 | 84.2        | 89.2 | &darr;13.7%     | &darr;11.7%    | &darr;8.8%     |
 |     ELIP           | 77.5 | 94.2      | 97.0 | 67.3 | 85.7        | 91.3 | &darr;**13.2%** | &darr;**9.0%** | &darr;**5.9%** |
+
+We have observed that ELIP outperforms all other baseline models on the MMI benchmark, demonstrating the effectiveness of our method in diverse OOD settings.
+
 
 ## Reviewer 3
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?

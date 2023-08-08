@@ -120,8 +120,8 @@ Experiment 2: We choose three **OOD-text** settings from mentioned in <https://a
 |                     | R@1      | R@5          | R@10     | R@1      | R@5      | R@10     | R@1  | R@5        | R@10 |
 |     CLIP-zs         | 21.0     | 41.2         | 51.6     | 29.2     | 53.0     | 63.6     | 36.4 | 60.9       | 70.8 |
 |     ALBEF-ft        | 38.0     | 63.4         | 73.0     | 52.4     | 77.7     | 85.5     | 60.2 | 83.9       | 90.3 |
-|     BLIP-ft         | **42.7** | **67.5**     | **76.6** | 55.5     | 79.5     | 86.7     | 63.5 | 85.3       | 91.2 |
-|     ELIP            | 36.8     | 61.3         | 71.0     | **56.2** | **80.0** | **87.5** |      |            |      |
+|     BLIP-ft         | **42.7** | **67.5**     | **76.6** | 55.5     | 79.5     | 86.7     | **63.5** | **85.3**       | **91.2** |
+|     ELIP            | 36.8     | 61.3         | 71.0     | **56.2** | **80.0** | **87.5** |  60.1    |   83.5         |  90.1    |
 
 | **Text Retrieval** |          |              |          |          |          |          |          |            |          |
 |--------------------|----------|--------------|----------|----------|----------|----------|----------|------------|----------|
@@ -130,13 +130,29 @@ Experiment 2: We choose three **OOD-text** settings from mentioned in <https://a
 |     CLIP-zs        | 36.8     | 62.1         | 72.8     | 47.0     | 72.8     | 81.8     | 56.8     | 80.4       | 87.7     |
 |     ALBEF-ft       | 57.9     | 82.6         | 89.6     | 70.1     | 90.6     | 95.1     | 77.6     | 94.1       | 97.0     |
 |     BLIP-ft        | **64.1** | **86.4**     | **91.9** | **74.2** | **92.4** | **96.1** | **81.7** | **95.2**   | **97.6** |
-|     ELIP           | 58.2     | 82.5         | 89.5     | 73.0     | 91.7     | 95.9     |          |            |          |
+|     ELIP           | 58.2     | 82.5         | 89.5     | 73.0     | 91.7     | 95.9     |   77.8       |    93.9        |    97.0      |
 
 After testing on different type of text OOD-cases, we found ELIP surpasses other baselines in word (SR) and sentence (formal) level perturbation, but downperform in character level perturbation.
 
 Experiment 3: Besides retrieval accuracy, we also provide comparison results on MMI benchmark. For OOD retrieval, we average over 5 Image-OOD, 5 Text-OOD and 3 cross-OOD settings. 
 
+| **Image Retrieval** |      |           |      |      |             |      |           |           |          |
+|---------------------|------|-----------|------|------|-------------|------|-----------|-----------|----------|
+|                     |      | **Clean** |      |      | **OOD_avg** |      |           | **MMI**   |          |
+|                     | R@1  | R@5       | R@10 | R@1  | R@5         | R@10 | R@1       | R@5       | R@10     |
+|     CLIP-zs         | 35.3 | 60.0      | 70.2 | 28.4 | 51.6        | 62.2 | &darr;19.5%     | &darr;14.0%     | &darr;11.4%    |
+|     ALBEF-ft        | 60.7 | 84.3      | 90.5 | 46.9 | 71.4        | 79.8 | &darr;22.8%     | &darr;15.4%     | &darr;11.8%    |
+|     BLIP-ft         | 64.3 | 85.7      | 91.5 | 51.0 | 74.2        | 81.9 | &darr;20.8%     | &darr;13.4%     | &darr;10.5%    |
+|     ELIP            | 60.4 | 83.9      | 90.5 | 50.1 | 74.9        | 83.3 | &darr;**17.1%** | &darr;**10.7%** | &darr;**8.0%** |
 
+| **Text Retrieval** |      |           |      |      |             |      |           |          |          |
+|--------------------|------|-----------|------|------|-------------|------|-----------|----------|----------|
+|                    |      | **Clean** |      |      | **OOD_avg** |      |           | **MMI**  |          |
+|                    | R@1  | R@5       | R@10 | R@1  | R@5         | R@10 | R@1       | R@5      | R@10     |
+|     CLIP-zs        | 56.0 | 79.6      | 86.9 | 43.2 | 63.2        | 77.6 | &darr;22.9%     | &darr;20.7%    | &darr;10.8%    |
+|     ALBEF-ft       | 77.6 | 94.3      | 97.2 | 60.8 | 81.5        | 87.3 | &darr;21.7%     | &darr;13.6%    | &darr;10.2%    |
+|     BLIP-ft        | 81.9 | 95.4      | 97.8 | 70.7 | 84.2        | 89.2 | &darr;13.7%     | &darr;11.7%    | &darr;8.8%     |
+|     ELIP           | 77.5 | 94.2      | 97.0 | 67.3 | 85.7        | 91.3 | &darr;**13.2%** | &darr;**9.0%** | &darr;**5.9%** |
 
 ## Reviewer 3
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?

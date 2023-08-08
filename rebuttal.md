@@ -44,6 +44,7 @@ R2.1 The authors may want to re-evaluate the contributions of this paper. The te
 A2.1 Adapter and evidential loss were well-explored in single domain study, respectively. In ELIP, we observe the robustness of adapter in multi-modal learnig and its strong adaptivity on new knowledge (evidential knowledge). On the other hand, most work use evidential loss in classification and regression task, we are the first to introduce evidential learning in cross-modal learning. We are not simply apply these two pre-studied work, in fact, we did plenty of research on how to apply evidential loss in an alignment work.   
 
 R2.2 The authors may want to explain why the proposed approach performs worse than the baseline BLIP+ft in many settings (see Table 1).
+
 A2.2 The primary focus of our research is centered around two key objectives: achieving deterministic uncertainty estimation and enhancing model robustness in out-of-distribution (OOD) cases. In Table 1, our method, ELIP, exhibits remarkable performance, surpassing BLIP-ft in both OOD-image and OOD-image&text scenarios. This achievement is particularly noteworthy as we fine-tuned a significantly smaller subset of parameters (65M) compared to BLIP, which utilizes a more complex structure and fine-tunes the entire model. Instead of a direct retrieval accuracy comparison, we adopt a reference paper [1]: <https://arxiv.org/pdf/2212.08044.pdf> suggested by reviewer 5LZy to ensure a more reasonable and objective evaluation. After reading, we found one benchmark named MultiModal Impact score, which can be used to analyze our existing experiment results, since **MMI** is used to easure the relative performance drop between the ID and OOD performance.
 Here is the MMI comparision based on our existing results:
 
@@ -70,6 +71,7 @@ Here is the MMI comparision based on our existing results:
 We have observed that ELIP and ELIP+ outperform all other baseline models on the MMI benchmark, demonstrating the effectiveness of our method in simple OOD settings.
 
 R2.3 The author may want to further explain why the evidential loss seems to have little effect in the ablation study (see Table 3), which is the key innovation of this paper.
+
 A2.3 It is important to note that our method does not primarily aim to improve overall retrieval accuracy. Instead, our key objective is to enhance the model's robustness when confronted with out-of-distribution (OOD) cases. The shift from the probability distribution (softMax) to the Dirichlet Distribution (evidence) effectively addresses the issue of over-confidence in the model's predictions. During inference, such as image-to-text (i2t) or text-to-image (t2i), the final softmax function in traditional models tends to force certain predictions, which works well for in-distribution (ID) cases. However, in OOD cases, this over-confidence becomes problematic. OOD inputs often contain misleading information, but the well-trained model disregards it and provides predictions with unwavering certainty.
 We propose the following ablation study with MMI score to show the effectiveness of evidential loss is
 
@@ -129,20 +131,28 @@ Experiment 2: We choose three **OOD-text** settings from mentioned in <https://a
 
 After testing on different type of text OOD-cases, we found ELIP surpasses other baselines in word (SR) and sentence (formal) level perturbation, but downperform in character level perturbation.
 
+Experiment 3: Besides retrieval accuracy, we also provide comparison results on MMI benchmark. For OOD retrieval, we average over 5 Image-OOD, 5 Text-OOD and 3 cross-OOD settings. 
+
+
+
 ## Reviewer 3
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?
-A3.1 
+
+A3.1 In ELIP, Dirichlet distribution is used to describe the sosine similarity between a query sample and all target samples. In standard deep learning, uncertainty is often treated as a single scalar value, such as softmax probabilities or variance, which might not capture the complexity of uncertainty inherent in real-world scenarios. The evidential deep learning framework aims to address this limitation by representing uncertainty using the entire distribution over fusion probabilities.
 
 R3.2 Can you expand on the role of Subjective Logic in quantifying uncertainty in this context?
-A3.2
+A3.2  
 
 R3.3 How is the belief mass calculated for each singleton in Subjective Logic, and what does it represent in the model's output?
-A3.3
+
+A3.3 Subjective Logic is a framework for reasoning under uncertainty that extends traditional probability theory to handle situations where incomplete or subjective information is available. In Subjective Logic, belief mass is used to quantify the degree of belief in different propositions or hypotheses. In our project, we use the cosine similarity between image an text to calculate the belief mass. Please follow Equation 3-5 in our paper for blief mass calculation.
 
 R3.4 What is the significance of assigning the similarity vector ρ as the general representation for ρi2t and ρt2i?
+
 A3.4 ρi2t and ρt2i follow the same rule, as described in Equation 6 and Equation 7. Using ρ in both equations enhances clarity and consistency.
 
 R3.5 In line 120, v_{cls} is not text embeddings, so it would be good to rephrase the sentence.
+
 A3.5 In line 120, v_{cls} means iamge token.
 
 R3.6 In line 189, "object" should be "objective".

@@ -41,11 +41,15 @@ Specifically, **training**: input (image-text pair) &rarr; image & text encoder 
 ## Reviewer 2
 R2.1 The authors may want to re-evaluate the contributions of this paper. The technical contribution seems limited, both adapters and evidential loss are well-explored and readily available in the literature.
 
-A2.1 Adapter and evidential loss were well-explored in single domain study, respectively. In ELIP, we observe the robustness of adapter in multi-modal learnig and its strong adaptivity on new knowledge (evidential knowledge). On the other hand, most work use evidential loss in classification and regression task, we are the first to introduce evidential learning in cross-modal learning. We are not simply apply these two pre-studied work, in fact, we did plenty of research on how to apply evidential loss in an alignment work.   
+A2.1 In the realm of single-domain research, both adapters and evidential loss have been extensively studied, each in their respective contexts. In the ELIP framework, we have observed the remarkable robustness of adapters in the context of multi-modal learning. Furthermore, we have witnessed their exceptional adaptability when faced with new knowledge, especially in the form of evidential information.
+Intriguingly, the majority of prior work has primarily employed evidential loss in tasks like classification and regression. However, in our case, we stand out as pioneers in introducing evidential learning to the realm of cross-modal learning. It's important to note that our approach isn't a mere application of these established techniques. Instead, we have undertaken extensive research to understand how to effectively integrate evidential loss within the alignment framework, yielding innovative results.
+In essence, ELIP takes the strengths of adapters and evidential loss and leverages them in a unique and synergistic way in the multi-modal and cross-modal learning landscape. Our endeavor encompasses both adaptivity to diverse knowledge forms and a novel application of evidential learning in alignment tasks. This amalgamation stems from rigorous research that goes beyond the surface and delves deep into the intricacies of effectively employing evidential loss within the alignment context. 
 
 R2.2 The authors may want to explain why the proposed approach performs worse than the baseline BLIP+ft in many settings (see Table 1).
 
-A2.2 The primary focus of our research is centered around two key objectives: achieving deterministic uncertainty estimation and enhancing model robustness in out-of-distribution (OOD) cases. In Table 1, our method, ELIP, exhibits remarkable performance, surpassing BLIP-ft in both OOD-image and OOD-image&text scenarios. This achievement is particularly noteworthy as we fine-tuned a significantly smaller subset of parameters (65M) compared to BLIP, which utilizes a more complex structure and fine-tunes the entire model. Instead of a direct retrieval accuracy comparison, we adopt a reference paper [1]: <https://arxiv.org/pdf/2212.08044.pdf> suggested by reviewer 5LZy to ensure a more reasonable and objective evaluation. After reading, we found one benchmark named MultiModal Impact score, which can be used to analyze our existing experiment results, since **MMI** is used to easure the relative performance drop between the ID and OOD performance.
+A2.2 Our research centers around achieving two primary objectives: deterministic uncertainty estimation and bolstering model robustness in out-of-distribution (OOD) scenarios. In Table 1, our method, ELIP, exhibits exceptional performance that outshines BLIP-ft in both OOD-image and OOD-image&text scenarios. Notably, this achievement is magnified by the fact that we fine-tuned a substantially smaller subset of parameters (65M) in comparison to BLIP, which employs a more intricate architecture and conducts fine-tuning across the entire model.
+To ensure a fair and objective evaluation, rather than a direct retrieval accuracy comparison, we took inspiration from a reference paper [1]: https://arxiv.org/pdf/2212.08044.pdf recommended by reviewer 5LZy. After a thorough review, we identified a relevant benchmark called the MultiModal Impact (MMI) score. This score provides a method to analyze our existing experimental results, as the MMI metric gauges the relative performance drop between in-distribution (ID) and OOD performance.
+Incorporating the MMI score, we gain a more comprehensive insight into the effectiveness of our approach. ELIP's ability to excel across various scenarios, combined with our resource-efficient parameter fine-tuning strategy, highlights the significance of our contributions in deterministic uncertainty estimation and model robustness enhancement.
 Here is the MMI comparision based on our existing results:
 
 | **Image Retrieval** |      |           |      |      |                 |      |           |           |          |
@@ -86,9 +90,8 @@ We propose the following ablation study with MMI score to show the effectiveness
 | ELIP        | 77.5              | 66.3 | 71.3 | 60.0 | 65.9    | &darr;**15.0%** | 60.4              | 51.5 | 52.3 | 43.7 | 49.2    | &darr;**18.6%** |
 
 R2.4 The experiments are insufficient. The authors may want to compare the proposed model with baselines on more settings, such as changing the proportion of random noise during OOD generation.
-A2.4 To validate our method's ability to handle more complex and diverse OOD cases, we followed the same reference and generated different sets of perturbated images and texts.
-Experiment 1: We choose three **OOD-image** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
-
+A2.4 In order to assess the effectiveness of our method in addressing a broader range of intricate out-of-distribution (OOD) cases, we adhered to the same reference and created various sets of perturbed images and texts.
+In the first experiment, we selected three distinct OOD-image settings as highlighted in https://arxiv.org/pdf/2212.08044.pdf. Our analysis encompasses results averaged across five different perturbation levels. Presented below are the performance comparisons for Image-Text Retrieval between ELIP and baseline models on the MS-COCO dataset.
 | Image Retrieval |      |           |      |      |      |      |      |      |      |
 |-----------------|------|-----------|------|------|------|------|------|------|------|
 |                 |      | Blur-Zoom |      |      | Snow |      |      | JPEG |      |
@@ -109,7 +112,7 @@ Experiment 1: We choose three **OOD-image** settings from mentioned in <https://
 
 After testing on more complex image-OOD cases, we observe ELIP surpasses other baselines in most strong OOD settings.
 
-Experiment 2: We choose three **OOD-text** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO.
+Experiment 2: We choose three **OOD-text** settings from mentioned in <https://arxiv.org/pdf/2212.08044.pdf>, all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO dataset.
 
 | **Image Retrieval** |          |              |          |          |          |          |      |            |      |
 |---------------------|----------|--------------|----------|----------|----------|----------|------|------------|------|

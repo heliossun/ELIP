@@ -160,7 +160,7 @@ Experiment 2: We also randomly choose three **OOD-text** settings from three per
 
 After testing on different type of text-OOD cases, we found ELIP doesn't perform as good as facing the image-OOD cases, but this follows the same trend in our own OOD settings (Table 1 main draft). We want to reemphasize this issue in two perspectives. 1) BLIP and ALBEF use cross-modal attention to align image and text during training. 2) BLIP and ALBEF have a two-stage evalution process, the image and text features were generated based on each other. Contrastively, ELIP is a retrieval-focus two-stream structure witout cross-modal attention, each modal has an independent encoder, which allows much faster inference time in retrieval task than BLIP/ ALBEF.  
 
-Thanks to reviewer 5LZY, we can further our evluation using MMI benchmark. For OOD retrieval, we average over 5 Image-OOD (gaussian noise, random rotate, zoom-blur, snow, JPEG), 4 Text-OOD (natural noise, keyboard, SR, Formal) and 3 cross-OOD settings (mentioned in main draft). 
+**Robustness Evaluation:** Thanks to reviewer 5LZY, we can further our evluation using MMI benchmark. For OOD retrieval, we average over 5 Image-OOD (gaussian noise, random rotate, zoom-blur, snow, JPEG), 4 Text-OOD (natural noise, keyboard, SR, Formal) and 3 cross-OOD settings (mentioned in main draft). 
 
 | **Image Retrieval** |      |           |      |      |             |      |           |           |          |
 |---------------------|------|-----------|------|------|-------------|------|-----------|-----------|----------|

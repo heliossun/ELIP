@@ -114,7 +114,7 @@ R2.4 The experiments are insufficient. The authors may want to compare the propo
 
 A2.4 We apprciated your review, I believe most reviews having the same concern about our limited evaluation. Thanks to reviewer 5LZY, we asses the effectiveness of our method in addressing a broader range of intricate out-of-distribution (OOD) cases, we adhered [1] and created various sets of perturbed images and texts.
 
-In the first experiment, we selected three distinct **OOD-image** settings as highlighted in [1]. We randomly choose one kind of perturbation from three categories (Blur: zoom, Weather: snow, Digital: JPEG). Our analysis encompasses results averaged across five perturbation levels. Presented below are the performance comparisons for Image-Text Retrieval between ELIP and baseline models on the MS-COCO dataset.
+In the first experiment, we selected three distinct **OOD-image** settings as highlighted in [1]. We randomly choose one perturbation from three categories (Blur: zoom, Weather: snow, Digital: JPEG), respectively. Our analysis encompasses results averaged across five perturbation levels. Presented below are the performance comparisons for Image-Text Retrieval between ELIP and baseline models on the **MS-COCO** dataset.
 
 | Image Retrieval |      |           |      |      |      |      |      |      |      |
 |-----------------|------|-----------|------|------|------|------|------|------|------|
@@ -136,7 +136,7 @@ In the first experiment, we selected three distinct **OOD-image** settings as hi
 
 After testing on more complex image-OOD cases, we observe ELIP surpasses other baselines in most strong OOD settings except JPEG compression. Ffrom our observation, we found JPEG compressed image doesn't have a clear domain shift, therefore we assume this OOD setting follows the trend of image-text result on clean data, where BLIP-ft surpasses ELIP in ID case.
 
-Experiment 2: We also randomly choose three **OOD-text** settings from three perturbation categories (character-level: keyboard, word-level: SR, sentence-level: formal) as mentioned in [1], all results are average on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on MS-COCO dataset.
+Experiment 2: We also randomly choose three **OOD-text** settings from three perturbation categories (character-level: keyboard, word-level: SR, sentence-level: formal) as mentioned in [1], all results are averaged on five perturbation levels. The following are Image-Text Retrieval performance comparision between ELIP and baseline models on **MS-COCO** dataset.
 
 | **Image Retrieval** |          |              |          |          |          |          |      |            |      |
 |---------------------|----------|--------------|----------|----------|----------|----------|------|------------|------|
@@ -156,7 +156,7 @@ Experiment 2: We also randomly choose three **OOD-text** settings from three per
 |     BLIP-ft        | **64.1** | **86.4**     | **91.9** | **74.2** | **92.4** | **96.1** | **81.7** | **95.2**   | **97.6** |
 |     ELIP           | 58.2     | 82.5         | 89.5     | 73.0     | 91.7     | 95.9     |   77.8       |    93.9        |    97.0      |
 
-After testing on different type of text-OOD cases, we found ELIP doesn't perform as good as facing the image-OOD cases, this follows the same trend in our own OOD settings (Table 1 main draft). We want to further explain this issue in three perspectives. 1) BLIP and ALBEF use cross-modal attention to align image and text during training. 2) BLIP and ALBEF have a two-stage evalution process, the image and text features were generated based on each other. ELIP is a two-stream structure witout cross-modal attention, and each modal has an independent encoder. 
+After testing on different type of text-OOD cases, we found ELIP doesn't perform as good as facing the image-OOD cases, but this follows the same trend in our own OOD settings (Table 1 main draft). We want to reemphasize this issue in two perspectives. 1) BLIP and ALBEF use cross-modal attention to align image and text during training. 2) BLIP and ALBEF have a two-stage evalution process, the image and text features were generated based on each other. Contrastively, ELIP is a retrieval-focus two-stream structure witout cross-modal attention, each modal has an independent encoder, which allows much faster inference time in retrieval task than BLIP/ ALBEF.  
 
 Thanks to reviewer 5LZY, we can further our evluation using MMI benchmark. For OOD retrieval, we average over 5 Image-OOD (gaussian noise, random rotate, zoom-blur, snow, JPEG), 4 Text-OOD (natural noise, keyboard, SR, Formal) and 3 cross-OOD settings (mentioned in main draft). 
 
@@ -178,21 +178,21 @@ Thanks to reviewer 5LZY, we can further our evluation using MMI benchmark. For O
 |     BLIP-ft        | 81.9 | 95.4      | 97.8 | 70.7 | 84.2        | 89.2 | &darr;13.7%     | &darr;11.7%    | &darr;8.8%     |
 |     ELIP           | 77.5 | 94.2      | 97.0 | 67.3 | 85.7        | 91.3 | &darr;**13.2%** | &darr;**9.0%** | &darr;**5.9%** |
 
-We have observed that ELIP outperforms all other baseline models on the MMI benchmark, demonstrating the effectiveness of our method in diverse OOD settings.
+We have observed that ELIP outperforms all other baseline models on the MMI benchmark, demonstrating the robustness of our method in diverse OOD settings. 
 
 [1]: <https://arxiv.org/pdf/2212.08044.pdf> 
 Qiu, Jielin et al. “Are Multimodal Models Robust to Image and Text Perturbations?” ArXiv abs/2212.08044 (2022): n. pag.
 
 ## Reviewer 3
 
-We appreciate the Reviewer's approval and valuable comments. We respond to the Reviewer's concerns as below.
+We appreciate the Reviewer's approval and valuable comments. We respond to the Reviewer's concerns as below. Hope our explaination mitigate your concerns. 
 
 R3.1 Could you explain how the Dirichlet distribution is used in the evidential deep learning framework to model uncertainty?
 
-A3.1 In ELIP, Dirichlet distribution is used to describe the sosine similarity between a query sample and all target samples. In standard deep learning, uncertainty is often treated as a single scalar value, such as softmax probabilities or variance, which might not capture the complexity of uncertainty inherent in real-world scenarios. The evidential deep learning framework aims to address this limitation by representing uncertainty using the entire distribution over fusion probabilities.
+A3.1 In ELIP, Dirichlet distribution is used to describe the sosine similarity distribution between a query sample and all target samples. In standard deep learning, uncertainty is often treated as a single scalar value, such as softmax probabilities or variance, which might not capture the complexity of uncertainty inherent in real-world scenarios. The evidential deep learning framework aims to address this limitation by representing uncertainty using the entire distribution over fusion probabilities.
 
 R3.2 Can you expand on the role of Subjective Logic in quantifying uncertainty in this context?
-A3.2  
+A3.2 Subjective Logic is particularly useful in situations where there are multiple sources of information with varying levels of trustworthiness, or when dealing with subjective opinions and beliefs. ELIP mainly focus on image-text retrieval task, which involves feature alignment and ranking process that contains multiple sources aof information and different levels of trustworthiness, respectively. Therefore, we consider using Subjective Logic to quantify cross-modal retrieval uncertainty. 
 
 R3.3 How is the belief mass calculated for each singleton in Subjective Logic, and what does it represent in the model's output?
 
@@ -200,7 +200,7 @@ A3.3 Subjective Logic is a framework for reasoning under uncertainty that extend
 
 R3.4 What is the significance of assigning the similarity vector ρ as the general representation for ρi2t and ρt2i?
 
-A3.4 ρi2t and ρt2i follow the same rule, as described in Equation 6 and Equation 7. Using ρ in both equations enhances clarity and consistency.
+A3.4 We use ρ as the general representation for ρi2t and ρt2i to enhance the clarity and consistency of our equation. Since ρi2t and ρt2i follow the same computation rule in Equation 6 and Equation 7 from our main draft. 
 
 R3.5 In line 120, v_{cls} is not text embeddings, so it would be good to rephrase the sentence.
 

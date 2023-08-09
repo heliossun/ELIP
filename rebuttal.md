@@ -45,9 +45,11 @@ It is important to note that our method does not primarily aim to improve overal
 
 To tackle this problem, our approach considers the Dirichlet Distribution (evidence) during inference, allowing the model to weigh all probabilities rather than relying on a single point probability. This consideration of multiple probabilities is crucial in OOD cases, where the matching scores between images and texts may exhibit an even distribution. By incorporating evidence-driven fine-tuning and embracing the uncertainty inherent in the Dirichlet Distribution, our model achieves enhanced robustness in image-text retrieval tasks, particularly when handling challenging out-of-distribution scenarios.
 
-For clarificarion of Fig.3, you can follow the components clockwisely, starting from the bottom-left corner. 
-Specifically, **training**: input (image-text pair) &rarr; image & text encoder &rarr; feature output alignment &rarr; evidencial learning;
-**inference**: input (image & text) &rarr; image & text encoder &rarr; feature output alignment &rarr; retrieval & uncertainty estimation.
+**Durection for Figure 3:** Please follow the components clockwisely, starting from the bottom-left corner, we provide the working-flow of ELIP (training & testing) below, we hope this introduction can assist you have a better reading of our Figure 3. 
+
+**Training**: input (image-text pair) &rarr; image & text encoder &rarr; feature output alignment &rarr; evidencial learning;
+
+**Test**: input (image & text) &rarr; image & text encoder &rarr; feature output alignment (retrieval) &rarr; retrieval & uncertainty estimation.
 
 [1]: <https://arxiv.org/pdf/2212.08044.pdf> 
 Qiu, Jielin et al. “Are Multimodal Models Robust to Image and Text Perturbations?” ArXiv abs/2212.08044 (2022): n. pag.
@@ -58,7 +60,7 @@ We appreciate the Reviewer's approval and constructive suggestions for us to imp
 
 R2.1 The authors may want to re-evaluate the contributions of this paper. The technical contribution seems limited, both adapters and evidential loss are well-explored and readily available in the literature.
 
-A2.1 **Lack of technical contribution:** We admit the Review's comment. In the realm of single-domain research, both adapters and evidential loss have been extensively studied, each in their respective contexts. However, in the ELIP framework, we have observed the remarkable robustness of adapters in the context of multi-modal learning ,and we have witnessed their exceptional adaptability when faced with new knowledge, especially in the form of evidential information.
+A2.1 **Lack of technical contribution:** We admit the Review's comment. In the realm of single-domain research, both adapters and evidential loss have been extensively studied, each in their respective contexts. However, in the ELIP framework, we have testes the remarkable robustness of adapters in the context of multi-modal learning, and we have witnessed their exceptional adaptability when faced with new knowledge, especially in the form of evidential information.
 Intriguingly, the majority of prior work has primarily employed evidential loss in tasks like classification and regression. However, in our case, we stand out as pioneers in introducing evidential learning to the realm of cross-modal learning. It's important to note that our approach isn't a mere application of these established techniques. Instead, we have undertaken extensive research to understand how to effectively integrate evidential loss within the alignment framework, yielding innovative results.
 
 We want to reemphasize that in essence, ELIP takes the strengths of adapters and evidential loss and leverages them in a unique and synergistic way in the multi-modal and cross-modal learning landscape. Our endeavor encompasses both adaptivity to diverse knowledge forms and a novel application of evidential learning in alignment tasks. This amalgamation stems from rigorous research that goes beyond the surface and delves deep into the intricacies of effectively employing evidential loss within the alignment context. 

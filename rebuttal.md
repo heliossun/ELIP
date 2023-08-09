@@ -5,15 +5,15 @@ It is important to note that our method does not primarily aim to improve overal
 To tackle this problem, our approach considers the Dirichlet Distribution (evidence) during inference, allowing the model to weigh all probabilities rather than relying on a single point probability. This consideration of multiple probabilities is crucial in OOD cases, where the matching scores between images and texts may exhibit an even distribution. By incorporating evidence-driven fine-tuning and embracing the uncertainty inherent in the Dirichlet Distribution, our model achieves enhanced robustness in image-text retrieval tasks, particularly when handling challenging out-of-distribution scenarios.
 
 ## Reviewer 1
-[1]: <https://arxiv.org/pdf/2212.08044.pdf>
+
 
 R1.1 The experiment result do not support the claim "significantly improve the performance of the mainstream pre-trained VL models (e.g., CLIP and BLIP) on both in-distribution and out-of-distribution cases for image-text retrieval." In Tab.1, most result of the proposed ELIP is worse than the baseline BLIP+ft.
 
 A1.1 We agree with the Reviewer's comment, but we want to reemphasize that the primary focus of our research is centered around two key objectives: achieving deterministic uncertainty estimation and enhancing model robustness in out-of-distribution (OOD) cases. In Table 1 (main draft), our method, ELIP, exhibits remarkable performance, surpassing BLIP-ft in both OOD-image and OOD-image&text scenarios. This achievement is particularly noteworthy as we fine-tuned a significantly smaller subset of parameters (65M) compared to BLIP, which utilizes a more complex structure and fine-tunes the entire model. 
 
-In addition, we adopt a reference paper [1] suggested by reviewer 5LZy to further our experiment. After reading, we found the benchmark MultiModal Impact score can be used to analyze our existing experiment results, since **MMI** is used to easure the relative performance drop between the ID and OOD performance, this benchmark will ensure a more reasonable and objective evaluation.
+In addition, we adopt a reference paper [1] suggested by reviewer 5LZy to further our experiment. After reading, we found the benchmark MultiModal Impact score (MMI) can be used to analyze our existing experiment results, since **MMI** is used to easure the relative performance drop between the ID and OOD performance, this benchmark will ensure a more reasonable and objective evaluation.
 
-\* **In the following table, we grab the clean and average OOD retrieval resuls from Table 1(main draft) directly**. In addition, we provide the MMI comparision based on these results:
+\* **In the following table, we grab the clean and average OOD retrieval resuls from Table 1(main draft) directly**. In addition, we provide the **MMI** comparision based on these results:
 
 | **Image Retrieval** |      |           |      |      |                 |      |           |           |          |
 |---------------------|------|-----------|------|------|-----------------|------|-----------|-----------|----------|
@@ -39,7 +39,7 @@ We have observed that ELIP and ELIP+ outperform all other baseline models on the
 
 R1.2 The writing of the approach part is not clear, the main figure (Fig.3) also makes me confused since the locations of all components do not have a clear order (like from left to right, or bottom to up, etc.)
 
-A1.2 We appreciate the Reviewers for providing this good suggestion, which gives us a chance to summarize our approach and we will clarify this in our final version. The primary focus of this paper is to introduce an innovative approach for leveraging evidential learning in the image-text retrieval task, which enables improved uncertainty estimation. To achieve this, we employ adapters to efficiently fine-tune mainstream pre-trained Vision-and-Language (VL) models, such as CLIP and BLIP. Our method involves a gradual shift from a simple probability distribution (softMax) to a more robust Dirichlet Distribution (evidence) as the model's posterior. Consequently, our model transforms into a deterministic uncertainty estimator.
+A1.2 We appreciate the Reviewers for providing this good suggestion, which gives us a chance to re-summarize our approach and we will clarify this in our final version. The primary focus of this paper is to introduce an innovative approach for leveraging evidential learning in the image-text retrieval task, which enables improved uncertainty estimation. To achieve this, we employ adapters to efficiently fine-tune mainstream pre-trained Vision-and-Language (VL) models, such as CLIP and BLIP. Our method involves a gradual shift from a simple probability distribution (softMax) to a more robust Dirichlet Distribution (evidence) as the model's posterior. Consequently, our model transforms into a deterministic uncertainty estimator.
 
 It is important to note that our method does not primarily aim to improve overall retrieval accuracy. Instead, our key objective is to enhance the model's robustness when confronted with out-of-distribution (OOD) cases. The shift from the probability distribution (softMax) to the Dirichlet Distribution (evidence) effectively addresses the issue of over-confidence in the model's predictions. During inference, such as image-to-text (i2t) or text-to-image (t2i), the final softmax function in traditional models tends to force certain predictions, which works well for in-distribution (ID) cases. However, in OOD cases, this over-confidence becomes problematic. OOD inputs often contain misleading information, but the well-trained model disregards it and provides predictions with unwavering certainty.
 
@@ -48,6 +48,9 @@ To tackle this problem, our approach considers the Dirichlet Distribution (evide
 For clarificarion of Fig.3, you can follow the components clockwisely, starting from the bottom-left corner. 
 Specifically, **training**: input (image-text pair) &rarr; image & text encoder &rarr; feature output alignment &rarr; evidencial learning;
 **inference**: input (image & text) &rarr; image & text encoder &rarr; feature output alignment &rarr; retrieval & uncertainty estimation.
+
+[1]: <https://arxiv.org/pdf/2212.08044.pdf> 
+Qiu, Jielin et al. “Are Multimodal Models Robust to Image and Text Perturbations?” ArXiv abs/2212.08044 (2022): n. pag.
 
 ## Reviewer 2
 
@@ -177,6 +180,8 @@ Thanks to reviewer 5LZY, we can further our evluation using MMI benchmark. For O
 
 We have observed that ELIP outperforms all other baseline models on the MMI benchmark, demonstrating the effectiveness of our method in diverse OOD settings.
 
+[1]: <https://arxiv.org/pdf/2212.08044.pdf> 
+Qiu, Jielin et al. “Are Multimodal Models Robust to Image and Text Perturbations?” ArXiv abs/2212.08044 (2022): n. pag.
 
 ## Reviewer 3
 
@@ -216,7 +221,7 @@ R4.2 The OOD settings discussed in the article are overly simplistic and may not
 
 R4.3 There is already existing article [1]: <https://arxiv.org/pdf/2212.08044.pdf> that propose benchmarks for similar OOD problems, with more complex settings. I recommend that the authors follow the settings provided in [1] to evaluate the performance of their method.
 
-A4.2 & A4.3 We really appreciate the Reviewer's suggestion. To validate our method's ability to handle more complex and diverse OOD cases, we followed the referenceed paper and generated different sets of perturbated images and texts.
+A4.2 & A4.3 We really thank for the Reviewer's pointing out this important related work. To validate our method's ability to handle more complex and diverse OOD cases, we followed [1] and generated different sets of perturbated images and texts.
 
 In the first experiment, we selected three distinct **OOD-image** settings as highlighted in [1]. We randomly choose one kind of perturbation from three categories (Blur: zoom, Weather: snow, Digital: JPEG). Our analysis encompasses results averaged across five perturbation levels. Presented below are the performance comparisons for Image-Text Retrieval between ELIP and baseline models on the MS-COCO dataset.
 

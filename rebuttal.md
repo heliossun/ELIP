@@ -61,6 +61,18 @@ From the new experiments, we observed that ELIP presents the best robustness in 
 `Q2`: Are there clear advantages or limitations identified in the comparison? I would like to see more discussions and comparisons in the experimental session.
 
 `A2`:
+>*
+>* ELIP can provide uncertainty estimation and retrieval result in a single forward process, we provide an analysis about uncertainty estimation of ELIP.
+
+| **Uncertainty**    |      |      | i2t  |      |      |      |      |      |      | t2i  |      |      |
+|--------------------|------|------|------|------|------|------|------|------|------|------|------|------|
+| Perturbation/Level | 1    | 2    | 3    | 4    | 5    | avg  | 1    | 2    | 3    | 4    | 5    | avg  |
+| Shot               | 0.43 | 0.44 | 0.46 | 0.48 | 0.51 |      | 0.65 | 0.66 | 0.67 | 0.69 | 0.72 |      |
+| Impulse            | 0.44 | 0.45 | 0.46 | 0.48 | 0.51 |      | 0.66 | 0.66 | 0.67 | 0.69 | 0.72 |      |
+| Defocus            | 0.45 | 0.46 | 0.49 | 0.52 | 0.56 |      | 0.67 | 0.68 | 0.72 | 0.76 | 0.79 |      |
+| Speckle            | 0.43 | 0.44 | 0.45 | 0.46 | 0.48 |      | 0.66 | 0.66 | 0.67 | 0.68 | 0.70 |      |
+| Pixel              | 0.45 | 0.46 | 0.49 | 0.53 | 0.57 |      | 0.67 | 0.68 | 0.70 | 0.75 | 0.80 |      |
+| Clean              | -    | -    | -    | -    | -    | 0.43 | -    | -    | -    | -    | -    | 0.65 |
 
 `Q3`: Since some noises are manually simulated, to what extent does the proposed method generalize to diverse datasets and real-world scenarios?
 
@@ -83,17 +95,9 @@ A1:  It is correct that $MMI = (R@k_{clean}-R@k_{ood})/R@k_{clean}$. In Table1, 
 `Q2`: Why use MMI in the first place?
 
 `A2`: 
-
-`Q3`: What is ELIP+?
-
-`Q4`: What dataset was used for the ablation study?
-
-`Q5`: What are the parameters used for the noise-adding processes?
-
-1. We test on five more image perturbation settings. We provide averaged Recall, RSUM, and MMI over five perturbation levels, to evaluate the robustness of each model.
-Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10))
-
-
+>* We agree with the reviewer's concern about MMI score, it is true that if one model has lower ID and consistant OOD performance lead to `lower MMI` than another model with higher ID and consistant OOD performance. However, experimental result shows that ELIP has `lower ID`, but `higher OOD` Recall(R@k). Also, we use MMI since we think it can not only describe the impaction of one `perturbation` to the model's performance [1], but also presents the robustness of one model implicitly. 
+>* After research, we found `RSUM` proposed in [2] can be another metric to evaluate model's robustness. Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10)).
+>* We generate five new perturbation and present our analysis below.
 
 | Method   | Clean | Shot  | Impulse | Speckle | Defocus | Pixel | **ave** | MMI |
 |----------|-------|-------|---------|---------|---------|-------|---------|-----|
@@ -103,14 +107,24 @@ Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10))
 | BLIP FT  | 516.6 | 472.1 | 467.7   | 489.5   | 466.1   | 404.7 | 460.2   |10.9%|
 | ELIP     | 503.5 | 480.0 | 483.7   | 485.0   |  476.2  | 469.8 | 478.9   |4.9%|
 
-| **Uncertainty**    |      |      | i2t  |      |      |      |      |      |      | t2i  |      |      |
-|--------------------|------|------|------|------|------|------|------|------|------|------|------|------|
-| Perturbation/Level | 1    | 2    | 3    | 4    | 5    | avg  | 1    | 2    | 3    | 4    | 5    | avg  |
-| Shot               | 0.43 | 0.44 | 0.46 | 0.48 | 0.51 |      | 0.65 | 0.66 | 0.67 | 0.69 | 0.72 |      |
-| Impulse            | 0.44 | 0.45 | 0.46 | 0.48 | 0.51 |      | 0.66 | 0.66 | 0.67 | 0.69 | 0.72 |      |
-| Defocus            | 0.45 | 0.46 | 0.49 | 0.52 | 0.56 |      | 0.67 | 0.68 | 0.72 | 0.76 | 0.79 |      |
-| Speckle            | 0.43 | 0.44 | 0.45 | 0.46 | 0.48 |      | 0.66 | 0.66 | 0.67 | 0.68 | 0.70 |      |
-| Pixel              | 0.45 | 0.46 | 0.49 | 0.53 | 0.57 |      | 0.67 | 0.68 | 0.70 | 0.75 | 0.80 |      |
-| Clean              | -    | -    | -    | -    | -    | 0.43 | -    | -    | -    | -    | -    | 0.65 |
+`Q3`: What is ELIP+?
+`A3`: In our project, `ELIP+` is `BLIP + ours`.
+
+`Q4`: What dataset was used for the ablation study?
+
+`A4`: We use MS-COCO for the ablation study.
+
+`Q5`: What are the parameters used for the noise-adding processes?
+
+`A5`: We provide a table for the parameters of each perturbation.  
+
+1. We test on five more image perturbation settings. We provide averaged Recall, RSUM, and MMI over five perturbation levels, to evaluate the robustness of each model.
+Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10))
+
+
+
+
+
+
 
 

@@ -54,10 +54,41 @@ From the new experiments, we observed that ELIP presents the best robustness in 
 
 
 ## Reviewer 4
+`Q1`: How does the proposed evidential learning approach compare to existing methods in terms of performance, robustness, and efficiency?
+
+`A1`: ensemble and other 
+
+`Q2`: Are there clear advantages or limitations identified in the comparison? I would like to see more discussions and comparisons in the experimental session.
+
+`A2`:
+
+`Q3`: Since some noises are manually simulated, to what extent does the proposed method generalize to diverse datasets and real-world scenarios?
+
+`A3`:
+
+`Q4`: Are there insights into the model's transferability across different tasks and domains?
+
+`A4`: classification?
+
+`Q5`: Given the computational demands associated with some probabilistic approaches, how does the proposed evidential learning method address issues related to scalability and efficiency?
+`A5`:  We use adapter as an efficient fine-tuning method, during training, all pre-trained CLIP weights are fixed,  
 
 
 ## Reviewer 5
 
+`Q1`: What is the explanation on the seeming mis-match of MMI computations?
+
+A1:  It is correct that $MMI = (R@k_{clean}-R@k_{ood})/R@k_{clean}$. In Table1, we compute $R@k_{ood}=(R@k_{text-ood}+R@k_{image-ood}+R@k_{cross-ood})/3$, we appreciate this comment, and we will add a detailed explaination of this computing process in our final version.
+
+`Q2`: Why use MMI in the first place?
+
+`A2`: 
+
+`Q3`: What is ELIP+?
+
+`Q4`: What dataset was used for the ablation study?
+
+`Q5`: What are the parameters used for the noise-adding processes?
 
 1. We test on five more image perturbation settings. We provide averaged Recall, RSUM, and MMI over five perturbation levels, to evaluate the robustness of each model.
 Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10))

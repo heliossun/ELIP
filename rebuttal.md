@@ -113,7 +113,7 @@ Based on the experiments, we provide the following analysis.
 * ELIP can provide uncertainty estimation and retrieval results in a single forward process.
 
 **Cons**
-* Deep ensemble requires longer training time, inference time, and computation cost. Suppose the NNs in the deep ensemble are the same as ELIP, and the number of NNs in the ensemble is M. With the same training and test time $T_{train}$, $T_{test}$ for each NN, deep ensemble will spend $M * (T_{train} + T_{test})$, and ELIP only requires $T_{train} + T_{test}$. Specifically, in our project, $T_{train} =28h $  when distributed training one NN for 10 epochs on 2*GPU (40GB), and $T_{test}=3 min$.  
+* Deep ensemble requires longer training time, inference time, and computation cost. Suppose the NNs in the deep ensemble are the same as ELIP, and the number of NNs in the ensemble is M. With the same training and test time $T_{train}$, $T_{test}$ for each NN, deep ensemble will spend $M * (T_{train} + T_{test})$, and ELIP only requires $T_{train} + T_{test}$. Specifically, in our project, $T_{train}$ = 28h when distributed training one NN for 10 epochs on 2*GPU (40GB), and $T_{test}=3 min$.  
  
 
 

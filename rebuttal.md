@@ -143,12 +143,13 @@ To test the transferability across domains, in Table 1, we perform zero-shot ret
 |    		 | 		 | i2t 	 |		 | 	 | t2i 	 | 		 |
 |-------------|----------|----------|---------|------|----------|----------|
 | Method 	 | R@1 	 | R@5 	 | R@10    | R@1  | R@5 	 | R@10     |
-| ALBEF  	 | 94.1     | 99.5     | 99.7    | 82.8 | 96.3     | 98.1     |
-| BLIP   	 | 94.8     | **99.7** | **100** | 84.9 | 96.7     | 98.3     |
+| CLIP  	 | 88.0    | 98.7     | 99.4   | 68.7 | 90.6     | 95.2     |
+| ALBEF$^\dagger$  	 | 94.1     | 99.5     | 99.7    | 82.8 | 96.3     | 98.1     |
+| BLIP$^\dagger$   	 | 94.8     | **99.7** | **100** | 84.9 | 96.7     | 98.3     |
 | ELIP w/o EV | 93.4     | 99.3     | 99.7    | 82.3 | 96.2     | 98.2     |
 | ELIP   	 | **95.2** | 99.6     | 99.9    | 83.9 | **97.1** | **98.6** |
 
-_Table 1: Comparison of zero-shot image-text retrieval on Flickr30k. All methods are fine-tune on MS-COCO._
+_Table 1: Comparison of zero-shot image-text retrieval on Flickr30k. For ALBEF$^\dagger$ and BLIP$^\dagger$, we collect the results directly from [1]._
 
 Since image captioning is out of the page of this project, we will leave this study for future work.
 

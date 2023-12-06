@@ -186,14 +186,10 @@ As for the efficiency, ELIP only fine-tunes the extra adapters. Therefore, ELIP 
 
 `Weakness` : ELIP+ improvement over ELIP is never discussed in detail and simply just appears in page 6.
 
-`A-W`: From our experiments, we found ELIP+ does not improve BLIP as much as ELIP improves CLIP. We kindly summarize two potential reasons for this as follows:
+`A-W`: We appreciate this insight comments. We kindly make a clearification below and we hope the explanation can respond to your concern.
 
-* BLIP has three loss terms: ITC, ITM, and LM. For ITC loss, they introduced a `momentum encoder` to generate soft labels, which improves vision-language understanding and leads to better model performance. However, the `momentum encoder` has millions of parameters and demand more GPU memory, which is limited by our computation resource.
-
-* We follow BLIP’s implementation but simplify ELIP+’s architecture by eliminating all the momentum encoders, since we propose a light-weight fine-tuning method. By doing this, the `batch size` we use in ELIP+ (`200`) is still smaller than BLIP (`256`) used. As we observed, the batch size is essential in a contrastive learning framework, which can also explain why ELIP+ performs worse than BLIP in some cases.
-
-We observed that our method has a larger improvement on CLIP than BLIP. One explanation is, we believe the pre-trained CLIP has better generalization than BLIP. Specifically, CLIP pre-trained on a web-scale dataset, but BLIP pre-trained on COCO and many other datasets.
-This paper is mainly focused on ELIP, since ELIP is much faster to train and test than ELIP+. 
+The goal of our method is to improve the pre-trained vision-language model, where ELIP and ELIP+ are the improved version of CLIP and BLIP. Therefore, giving (CLIP vs ELIP) and (BLIP vs ELIP+) can better explain the effectiveness of our method. 
+	
 
 `Q1`: What is the explanation on the seeming mis-match of MMI computations?
 

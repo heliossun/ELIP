@@ -88,16 +88,16 @@ As the reviewer `jcV3` suggested, the deep ensemble method is another solid appr
 |-------|---------------|:------------:|:------------:|:------------:|:------------:|:------------:|:------------:|
 | Noise | Method        |      R@1     |      R@5     |     R@10     |      R@1     |      R@5     |     R@10     |
 | None  | Ensemble(n=3) | 76.0$\pm$0.5 | 92.9$\pm$0.2 | 96.5$\pm$0.2 | 58.5$\pm$0.6 | 82.7$\pm$0.2 | 88.8$\pm$1.0 |
-|       | Ensemble(n=5) |              |              |              |              |              |              |
+|       | Ensemble(n=5) |     76.3$\pm$0.5     |   93.2$\pm$0.4    |     96.6$\pm$0.2      |    58.7 $\pm$0.5  |      82.8 $\pm$0.2    |     89.3$\pm$ 0.9    |
 |       | ELIP          |   **78.4**   |   **93.6**   |   **97.0**   |   **60.4**   |   **83.5**   |   **90.2**   |
 | Image | Ensemble(n=3) | 65.1$\pm$0.4 | 85.8$\pm$0.2 | 91.8$\pm$0.3 | 50.3$\pm$0.2 | 76.1$\pm$0.4 | 84.6$\pm$0.1 |
-|       | Ensemble(n=5) |              |              |              |              |              |              |
+|       | Ensemble(n=5) |    65.4$\pm$0.5  |    86.1$\pm$0.5     |     91.9$\pm$0.2   |    50.5$\pm$0.5    |    76.3$\pm$0.3   |   84.7$\pm$0.2     |
 |       | ELIP          |   **67.2**   |   **86.4**   |   **92.0**   |   **51.9**   |   **76.7**   |   **85.1**   |
 | Text  | Ensemble(n=3) | 69.1$\pm$0.3 | 89.4$\pm$0.1 | 94.2$\pm$0.1 | 50.3$\pm$0.7 | 75.7$\pm$0.4 | 84.3$\pm$0.3 |
-|       | Ensemble(n=5) |              |              |              |              |              |              |
+|       | Ensemble(n=5) |    69.2$\pm$0.3   |     89.6$\pm$0.3    |    94.3$\pm$0.1   |   50.5$\pm$0.3   |    75.8$\pm$0.1    |    84.5$\pm$0.2    |
 |       | ELIP          |   **72.0**   |   **90.6**   |   **94.8**   |   **52.3**   |   **77.0**   |   **85.0**   |
 | Cross | Ensemble(n=3) | 58.8$\pm$0.2 | 81.7$\pm$0.1 | 88.7$\pm$0.2 | 42.8$\pm$0.2 | 68.8$\pm$0.4 | 78.3$\pm$0.2 |
-|       | Ensemble(n=5) |              |              |              |              |              |              |
+|       | Ensemble(n=5) |     59.0$\pm$0.4  |    81.8$\pm$0.3  |    88.9$\pm$0.3     |    42.9$\pm$0.2    |    69.0$\pm$0.3     |     78.5$\pm$0.3    |
 |       | ELIP          |   **59.7**   |   **82.7**   |   **89.4**   |   **44.5**   |   **70.0**   |   **79.2**   |
 
 _Table 1: We train each model in parallel for 10 epochs with batch size as 280. The deep ensemble involves `n` models with different adapter's initialization, and we take the averaged Recall of all n moldes._
@@ -112,7 +112,7 @@ Based on the experiments, we provide the following analysis.
 * ELIP can provide uncertainty estimation and retrieval results in a single forward process.
 
 **Cons**
-* Deep ensemble requires longer training time, inference time, and computation cost. Suppose the NNs in the deep ensemble are the same as ELIP, and the number of NNs in the ensemble is M. With the same training and test time $T_{train}$, $T_{test}$ for each NN, deep ensemble will spend $M * (T_{train} + T_{test})$, and ELIP only requires $T_{train} + T_{test}$. Specifically, in our project, $T_{train}$ = 28h when distributed training one NN for 10 epochs on 2*GPU (40GB), and $T_{test}=3 min$.  
+* Deep ensemble requires longer training time, inference time, and computation cost. Suppose the models in the deep ensemble are the same as ELIP, and the number of models in the ensemble is n. With the same training and test time $T_{train}$, $T_{test}$ for each model, deep ensemble will spend $n * (T_{train} + T_{test})$, where ELIP only requires $T_{train} + T_{test}$. Specifically, in our project, $T_{train}$ = 28h when distributed training one model for 10 epochs on 2*GPU (40GB), and $T_{test}=3 min$.  
  
 
 

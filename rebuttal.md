@@ -4,7 +4,7 @@
 `Q1`: Missing evaluation with GPT-4v.
 
 `A1`: We thank the reviewer for this comment.
-It is non-trivial to directly call GPT-4V API to do image-text retrieval, since it requires a proper prompt design. Also, we did not compare `ELIP` with the Multi-Modal LLM `GPT4V` in our project since ELIP (parameter size = 400M) is an encoder-based model , which is different from GPT4V (parameter size = 1.7T), a large generative model. 
+It is non-trivial to directly call GPT-4V API for image-text retrieval since it requires a proper prompt design. Also, we did not compare `ELIP` with the Multi-Modal LLM `GPT4V` in our project since ELIP (parameter size = 400M) is an encoder-based model, which is different from GPT4V (parameter size = 1.7T), a large generative model. 
 
 
 ## Reviewer G7DB
@@ -14,9 +14,9 @@ It is non-trivial to directly call GPT-4V API to do image-text retrieval, since 
 
 We kindly summarize two explanations about the performance gap between ELIP+ and BLIP as follows:
 
-*  BLIP has three loss terms: ITC, ITM, and LM. For ITC loss, they introduced a `momentum encoder` to generate soft labels, which improves vision-language understanding and leads to better model performance. However, the `momentum encoder` has millions of parameters and demand more GPU memory, which is limited by our computation resource.
+*  BLIP has three loss terms: ITC, ITM, and LM. For ITC loss, they introduced a `momentum encoder` to generate soft labels, which improves vision-language understanding and leads to better model performance. However, the `momentum encoder` has millions of parameters and demands more GPU memory, which is limited by our computation resource.
 
-* We follow BLIP’s implementation but simplify ELIP+’s architecture by eliminating all the momentum encoders, since we propose a light-weight fine-tuning method. By doing this, the `batch size` we use in ELIP+ (`200`) is still smaller than BLIP (`256`) used. As we observed, the batch size is essential in a contrastive learning framework, which can also explain why ELIP+ performs worse than BLIP in some cases.
+* We follow BLIP’s implementation but simplify ELIP+’s architecture by eliminating all the momentum encoders since we propose a lightweight fine-tuning method. By doing this, the `batch size` we use in ELIP+ (`200`) is still smaller than the BLIP (`256`) used. As we observed, the batch size is essential in a contrastive learning framework, which can also explain why ELIP+ performs worse than BLIP in some cases.
 
 
 ## Reviewer J2CD
@@ -25,10 +25,9 @@ We kindly summarize two explanations about the performance gap between ELIP+ and
 
 `A1`: Thanks for the valuable comments.
 
-We provided eight perturbations to simulate real-world noise cases in our main draft. To further test our method on a wider range of perturbation methods, we follow [1] by generating five more OOD cases based on MS-COCO.
+We provided eight perturbations to simulate real-world noise cases in our main draft. We follow [1] by generating five more OOD cases based on MS-COCO to test our method further in a broader range of perturbation methods.
 
 * There are five perturbation levels of each OOD case, and we report the averaged Recall(R@k) of them in Table 1.
-
 
 
 |			  |   	  |    	  | i2t      |    	  |    	  |    	  | t2i      |    	  |    	  |
@@ -70,13 +69,13 @@ Novelty:
 
 `Weakness1`: It’s an integration of existing modules and the overall novelty of this framework is marginal.
 
-`W_A1`: We found deep evidential is a well-studied robust prediction method in the single-domain classification and regression tasks, and such method is proved to be useful for uncertainty estimation. However, our paper focuses on multi-modal understanding and ranking tasks, where the research of using deep evidential to improve the robustness of multi-modal embedding is insufficient.
+`W_A1`: We found deep evidential is a well-studied robust prediction method in the single-domain classification and regression tasks, and such a method has proved helpful for uncertainty estimation. However, our paper focuses on multi-modal understanding and ranking tasks, where the research of using deep evidential to improve the robustness of multi-modal embedding is insufficient.
 
 We kindly summarize the technical contributions of this work as follows:
 <ol>
-<li>We introduce a method that can be plugged into most of the transformer-based multi-modal learning framework (e.g., CLIP, BLIP).</li>
+<li>We introduce a method that can be plugged into most of the transformer-based multi-modal learning frameworks (e.g., CLIP, BLIP).</li>
 <li>Our proposed method improves the robustness of pre-trained models when facing OOD cases.</li>
-<li>We improve the efficiency of fine-tuning a robust-prediction vision-language model, achieving performance boost with much shorter training time and lower computational cost.</li>
+<li>We improve the efficiency of fine-tuning a robust prediction vision-language model, achieving a performance boost with much shorter training time and lower computational cost.</li>
 </ol>
 `Q1`: How does the proposed evidential learning approach compare to existing methods in terms of performance, robustness, and efficiency?
 
@@ -158,7 +157,7 @@ _Table 2. Comparison of performance in terms of Recall@K (R@K) among OOD retriev
 `Q4`: Are there insights into the model's transferability across different tasks and domains?
 
 `A4`: Thanks for the valuable suggestion!
-To test the transferability across domains, Table 3 provides comparison results of zero-shot retrieval on Flickr30K. Here we use the clean Flickr30k as the target domain test-set, and all methods are fine-tuned on the source domain MS-COCO. Besides this, we also provide zero-shot performance of CLIP (pre-training), which is not fine-tuned on MS-COCO. 
+To test the transferability across domains, Table 3 compares zero-shot retrieval results on Flickr30K. Here, we use the clean Flickr30k as the target domain test set, and all methods were finetuned on the source domain MS-COCO. Besides this, we also provide the zero-shot performance of CLIP (pre-training), which was not finetuned on MS-COCO. 
 
 |    		 | 		 | i2t 	 |		 | 	 | t2i 	 | 		 |
 |-------------|----------|----------|---------|------|----------|----------|
@@ -175,7 +174,7 @@ Since image captioning is out of the page of this project, we will leave this st
 
 `Q5`: Given the computational demands associated with some probabilistic approaches, how does the proposed evidential learning method address issues related to scalability and efficiency?
 
-`A5`:  With our lightweight robust fine-tuning method, we can scale it to most of the transformer-based multi-modal model that are trained using contrastive loss.
+`A5`:  With our lightweight, robust fine-tuning method, we can scale it to most of the transformer-based multi-modal models that are trained using contrastive loss.
 As for the efficiency, ELIP only fine-tunes the extra adapters. Therefore, ELIP is more efficient than the deep ensemble method, which usually trains multiple models and takes extra steps to perform the inference.
 
 [1]: 1.Li, J., Li, D., Xiong, C. & Hoi, S. BLIP: Bootstrapping Language-Image Pre-training for Unified Vision-Language Understanding and Generation.
@@ -186,28 +185,28 @@ As for the efficiency, ELIP only fine-tunes the extra adapters. Therefore, ELIP 
 
 `Weakness` : ELIP+ improvement over ELIP is never discussed in detail and simply just appears in page 6.
 
-`A-W`: We appreciate this insight comments. We kindly make a clearification below and we hope the explanation can respond to your concern.
+`A-W`: We appreciate this insight comment. We kindly clarify below and hope the explanation can respond to the concern.
 
-The goal of our method is to improve the pre-trained vision-language model, where ELIP and ELIP+ are the improved version of CLIP and BLIP. Therefore, giving (CLIP vs ELIP) and (BLIP vs ELIP+) can better explain the effectiveness of our method. 
+Our method aims to improve the pre-trained vision-language model, where ELIP and ELIP+ are the improved versions of CLIP and BLIP. Therefore, providing the comparisons (CLIP vs. ELIP) and (BLIP vs. ELIP+) can better presents the effectiveness of our method. 
 	
 
 `Q1`: What is the explanation on the seeming mis-match of MMI computations?
 
-A1: We really appreciate the meticulous comments.
+A1: We appreciate the meticulous comments.
 
-We kindly make a clarification as follows. 
+We kindly clarify as follows. 
 
 In this project, we compute $MMI = (R@k_{clean}-R@k_{ood})/R@k_{clean}$. In the main draft (Table1 & Table3), we compute $R@k_{ood}=(R@k_{text-ood}+R@k_{image-ood}+R@k_{cross-ood})/3$.
 
-It is our negligence that we didn’t provide a detailed explanation about how we compute the MMI in the main draft, and we will add this computing process in our final version.
+It is our negligence that we did not provide a detailed explanation about how we compute the MMI in the main draft, and we will add this computing process in our final version.
 
 `Q2`: Why use MMI in the first place?
 
 `A2`: Thanks for the valuable insights.
 
-* Intuitively, one of the key reasons we use MMI in our project is because we think MMI not only describes the impact of one perturbation on the model's performance [1] but also presents the robustness of the model. Also, analyzing the performance drop (MMI) between ID and OOD retrieval can support the effectiveness of our method, since we mainly focus on how the model performs when facing OOD cases.
+* IIntuitively, one of the key reasons we use MMI in our project is because we think MMI not only describes the impact of one perturbation on the model's performance [1] but also presents the robustness of the model. Also, analyzing the performance drop (MMI) between ID and OOD retrieval can support the effectiveness of our method since we mainly focus on how the model performs when facing OOD cases.
 
-* After research, we found `RSUM` proposed in [2] can be another metric to evaluate the model's robustness. Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10)). Therefore, besides the old perturbations, we additionaly generate six new perturbations (Keyboard, shot, impulse, speckle, defocus, pixel) based on `MS-COCO`, and present our analysis in Table 1.
+* After research, we found `RSUM` proposed in [2] can be another metric to evaluate the model's robustness. Where RSUM = SUM(i2t(R@1,R@5,R@10)+t2i(R@1,R@5,R@10)). Therefore, besides the old perturbations, we generate six new perturbations (Keyboard, shot, impulse, speckle, defocus, pixel) based on `MS-COCO,` and present our analysis in Table 1.
 
 | Method   | Clean |AVG OOD| Shot  | Impulse | Speckle | Defocus | Pixel | Zoom| Snow| JPEG| Keyboard| SR| Formal| MMI |
 |----------|-------|-------|---------|---------|---------|-------|---------|-----|-----|-----|-----|-----|-----|-----|
@@ -219,14 +218,14 @@ It is our negligence that we didn’t provide a detailed explanation about how w
 
 _Table 1: Comparison of performance in terms of RSUM and MMI among OOD retrieval. Where CLIP ZS is the pre-trained zero-shot evaluation, all other methods are fine-tuned on MS-COCO. `ave` is the average RSUM of all OOD retrieval._
 
-From our observations, even ELIP has relatively lower RSUM on ID retrieval, but it presents higher RSUM in most OOD cases, which indicates the robustness of ELIP when facing noisy images and text in retrieval tasks. Also, it is predictable that BLIP has better performance when dealing with some text OOD cases, since they put more efforts on improving language understanding.
+From our observations, even ELIP has a relatively lower RSUM on ID retrieval, but it presents a higher RSUM in most OOD cases, which indicates the robustness of ELIP when facing noisy images and text in retrieval tasks. Also, it is predictable that BLIP performs better when dealing with some text OOD cases since they put more effort into improving language understanding.
 
 `Q3`: What is ELIP+?
 `A3`: We kindly provide a clarification here. ELIP+ is our method plugged into BLIP, and ELIP is our method plugged into CLIP. Where BLIP and CLIP are two well-known vision-language modeling frameworks.
 
 `Q4`: What dataset was used for the ablation study?
 
-`A4`: Our ablation study is mainly focused on MS-COCO, since MS-COCO provides more distinct phenomena than Flickr30k. We use Gaussian Noise and Natural Noise as the image and text perturbation to generate test data for OOD retrieval. 
+`A4`: Our ablation study mainly focuses on MS-COCO, which provides more distinct phenomena than Flickr30k. We use Gaussian and Natural Noise as the image and text perturbation to generate test data for OOD retrieval. 
 
 `Q5`: What are the parameters used for the noise-adding processes?
 
@@ -278,7 +277,7 @@ This paper applies various noise-adding techniques.
 </ol>
 
 
-We are incapable of listing all parameters for the natural noise text [3] and the other perturbations [1], since each of them requires a complex generation process.
+We cannot list all parameters for the natural noise text [3] and the other perturbations [1] since each requires a complex generation process.
 
 [1]: Qiu, J., Zhu, Y., Shi, X., Wenzel, F., Tang, Z., Zhao, D., Li, B., & Li, M. (2022). Are Multimodal Models Robust to Image and Text Perturbations? ArXiv, abs/2212.08044.
 [2]: Wu, H., Mao, J., Zhang, Y., Jiang, Y., Li, L., Sun, W., & Ma, W. (2019). Unified Visual-Semantic Embeddings: Bridging Vision and Language With Structured Meaning Representations. 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 6602-6611.

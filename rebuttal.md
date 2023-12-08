@@ -69,14 +69,17 @@ Novelty:
 
 `Weakness1`: It’s an integration of existing modules and the overall novelty of this framework is marginal.
 
-`W_A1`: We found deep evidential is a well-studied robust prediction method in the single-domain classification and regression tasks, and such a method has proved helpful for uncertainty estimation. However, our paper focuses on multi-modal understanding and ranking tasks, where the research of using deep evidential to improve the robustness of multi-modal embedding is insufficient.
+`Weakness1`: It’s an integration of existing modules and the overall novelty of this framework is marginal.
 
-We kindly summarize the technical contributions of this work as follows:
+`W_A1`: We appreciate your observation. Indeed, our framework prioritizes simplicity and effectiveness. Its distinct feature is the integration of deep evidential learning with pre-existing multi-modal models, specifically tailored for ranking tasks. This approach addresses the relatively unexplored issue of handling diverse out-of-distribution (OOD) samples in widespread web applications. We acknowledge the inherent challenge in seamlessly embedding evidential uncertainty estimation into large, pre-trained models like CLIP and BLIP. To clarify, our technical contributions in this domain are outlined as follows:
+
 <ol>
-<li>We introduce a method that can be plugged into most of the transformer-based multi-modal learning frameworks (e.g., CLIP, BLIP).</li>
-<li>Our proposed method improves the robustness of pre-trained models when facing OOD cases.</li>
-<li>We improve the efficiency of fine-tuning a robust prediction vision-language model, achieving a performance boost with much shorter training time and lower computational cost.</li>
+<li>We designed and developed a lightweight uncertainty-aware finetuning method that can be plugged into most of the transformer-based multi-modal models (e.g., CLIP, BLIP).</li>
+<li>Our proposed method improves the robustness of pre-trained models when facing a broad range of OOD cases.</li>
+<li>We improve the efficiency of finetuning a robust prediction vision-language model, achieving a performance boost with much shorter training time and lower computational cost, especially compared with existing deep uncertainty methods such as deep ensemble[1].</li>
 </ol>
+
+
 `Q1`: How does the proposed evidential learning approach compare to existing methods in terms of performance, robustness, and efficiency?
 
 `A1`: We appreciate this valuable suggestion.
@@ -84,21 +87,21 @@ As the reviewer `jcV3` suggested, the deep ensemble method is another solid appr
 
 
 
-|       |               |              |      i2t     |              |              |      t2i     |              |
-|-------|---------------|:------------:|:------------:|:------------:|:------------:|:------------:|:------------:|
-| Noise | Method        |      R@1     |      R@5     |     R@10     |      R@1     |      R@5     |     R@10     |
-| None  | Ensemble(n=3) | 76.0$\pm$0.5 | 92.9$\pm$0.2 | 96.5$\pm$0.2 | 58.5$\pm$0.6 | 82.7$\pm$0.2 | 88.8$\pm$1.0 |
-|       | Ensemble(n=5) |     76.3$\pm$0.5     |   93.2$\pm$0.4    |     96.6$\pm$0.2      |    58.7 $\pm$0.5  |      82.8 $\pm$0.2    |     89.3$\pm$ 0.9    |
-|       | ELIP          |   **78.4**   |   **93.6**   |   **97.0**   |   **60.4**   |   **83.5**   |   **90.2**   |
-| Image | Ensemble(n=3) | 65.1$\pm$0.4 | 85.8$\pm$0.2 | 91.8$\pm$0.3 | 50.3$\pm$0.2 | 76.1$\pm$0.4 | 84.6$\pm$0.1 |
-|       | Ensemble(n=5) |    65.4$\pm$0.5  |    86.1$\pm$0.5     |     91.9$\pm$0.2   |    50.5$\pm$0.5    |    76.3$\pm$0.3   |   84.7$\pm$0.2     |
-|       | ELIP          |   **67.2**   |   **86.4**   |   **92.0**   |   **51.9**   |   **76.7**   |   **85.1**   |
-| Text  | Ensemble(n=3) | 69.1$\pm$0.3 | 89.4$\pm$0.1 | 94.2$\pm$0.1 | 50.3$\pm$0.7 | 75.7$\pm$0.4 | 84.3$\pm$0.3 |
-|       | Ensemble(n=5) |    69.2$\pm$0.3   |     89.6$\pm$0.3    |    94.3$\pm$0.1   |   50.5$\pm$0.3   |    75.8$\pm$0.1    |    84.5$\pm$0.2    |
-|       | ELIP          |   **72.0**   |   **90.6**   |   **94.8**   |   **52.3**   |   **77.0**   |   **85.0**   |
-| Cross | Ensemble(n=3) | 58.8$\pm$0.2 | 81.7$\pm$0.1 | 88.7$\pm$0.2 | 42.8$\pm$0.2 | 68.8$\pm$0.4 | 78.3$\pm$0.2 |
-|       | Ensemble(n=5) |     59.0$\pm$0.4  |    81.8$\pm$0.3  |    88.9$\pm$0.3     |    42.9$\pm$0.2    |    69.0$\pm$0.3     |     78.5$\pm$0.3    |
-|       | ELIP          |   **59.7**   |   **82.7**   |   **89.4**   |   **44.5**   |   **70.0**   |   **79.2**   |
+|       |               |      |  i2t |      |       |      |  t2i |      |       |           |
+|-------|---------------|:----:|:----:|:----:|:-----:|:----:|:----:|:----:|:-----:|-----------|
+| Noise | Method        |  R@1 |  R@5 | R@10 |  MMI  |  R@1 |  R@5 | R@10 |  MMI  | T$_train$ |
+| None  | Ensemble(n=3) | 76.0 | 92.9 | 96.5 |   -   | 58.5 | 82.7 | 88.8 |   -   |    84h    |
+|       | Ensemble(n=5) | 76.3 | 93.2 | 96.6 |   -   | 58.7 | 82.8 | 89.3 |   -   |    140h   |
+|       | ELIP          | 78.4 | 93.6 | 97.0 |   -   | 60.4 | 83.5 | 90.2 |   -   |    28h    |
+| Image | Ensemble(n=3) | 65.1 | 85.8 | 91.8 |  8.6% | 50.3 | 76.1 | 84.6 |  8.3% |           |
+|       | Ensemble(n=5) | 65.4 | 86.1 | 91.9 |  8.5% | 50.5 | 76.3 | 84.7 |  8.4% |           |
+|       | ELIP          | 67.2 | 86.4 | 92.0 |  8.7% | 51.9 | 76.7 | 84.1 |  9.1% |           |
+| Text  | Ensemble(n=3) | 69.1 | 89.4 | 94.2 |  4.8% | 50.3 | 75.7 | 84.3 |  8.6% |           |
+|       | Ensemble(n=5) | 69.2 | 89.6 | 94.3 |  4.9% | 50.5 | 75.8 | 84.5 |  8.7% |           |
+|       | ELIP          | 72.0 | 90.6 | 94.8 |  4.3% | 52.3 | 77.0 | 85.0 |  8.5% |           |
+| Cross | Ensemble(n=3) | 58.8 | 81.7 | 88.7 | 13.6% | 42.8 | 68.8 | 78.3 | 17.4% |           |
+|       | Ensemble(n=5) | 59.0 | 81.8 | 88.9 | 13.7% | 42.9 | 69.0 | 78.5 | 17.5% |           |
+|       | ELIP          | 59.7 | 82.7 | 89.4 | 13.8% | 44.5 | 70.0 | 79.2 | 17.3% |           |
 
 _Table 1: We train each model in parallel for 10 epochs with batch size as 280. The deep ensemble involves `n` models with different adapter's initialization, and we take the averaged Recall of all n moldes._
 
@@ -221,7 +224,8 @@ _Table 1: Comparison of performance in terms of RSUM and MMI among OOD retrieval
 From our observations, even ELIP has a relatively lower RSUM on ID retrieval, but it presents a higher RSUM in most OOD cases, which indicates the robustness of ELIP when facing noisy images and text in retrieval tasks. Also, it is predictable that BLIP performs better when dealing with some text OOD cases since they put more effort into improving language understanding.
 
 `Q3`: What is ELIP+?
-`A3`: We kindly provide a clarification here. ELIP+ is our method plugged into BLIP, and ELIP is our method plugged into CLIP. Where BLIP and CLIP are two well-known vision-language modeling frameworks.
+
+`A3`: We kindly provide a clarification here. As mentioned in our previsou response, ELIP+ is the advancement of BLIP. Specifically, ELIP+ is our method plugged into BLIP, and ELIP is our method plugged into CLIP. Where BLIP and CLIP are two well-known vision-language modeling frameworks.
 
 `Q4`: What dataset was used for the ablation study?
 
@@ -232,58 +236,59 @@ From our observations, even ELIP has a relatively lower RSUM on ID retrieval, bu
 `A5`:
 This paper applies various noise-adding techniques.
 
-<ol>
-<li>For the simple OOD image generation, we use the following parameters.</li>
- <ol>
-<li>Gaussian: $\sigma=0.1$, $\mu=0$ 	 </li>
-<li>Rotation: random(0$^\circ$,180$^ \circ$) </li>
- </ol>
+
+For the simple OOD image generation, we use the following parameters.
+
+*Gaussian: $\sigma=0.1$, $\mu=0$ 	 
+
+*Rotation: random(0$^\circ$,180$^ \circ$) 
  
-<li>For other image perturbations, we use the following parameters.Suppose we have an image X, and the generated noisy image as X’. We list the generation process of a few perturbations below.</li>
-<ol>
-<li> The variables are used to control the noisy level (1-5), 5 means the noisiest.</li>
-<li>Snow: X’ = X + snow_layer(loc, scale, clip, radius, sigma)</li>
-<ol>
- Snow layer:
-	<li>Level1: (0.1,0.3,3,0.5,10,4,0.8)</li>
-	<li>Level2: (0.2,0.3,2,0.5,12,4,0.7)</li>
-	<li>Level3: (0.55,0.3,4,0.9,12,8,0.7)</li>
-	<li>Level4: (0.55,0.3,4.5,0.85,12,8,0.65)</li>
-	<li>Level5: (0.55,0.3,2.5,0.85,12,12,0.55)</li>
-</ol>	
-<li>Zoom: X’ = (X + zoom(zoom factors)) / #zoom factors
-<ol>
-	Zoom factors:
-<li>Level1: [1, 1.01, 1.02 … 1.11]</li>
-<li>Level2: [1, 1.01, 1.02, … 1.16]</li>
-<li>Level3: [1, 1.02, 1.04, … 1.21]</li>
-<li>Level4: [1, 1.02, 1.04, … 1.26]</li>
-<li>Level5: [1, 1.03, 1.06, … 1.33]</li>
-</ol>
-<li>Defocus: X’ = defocus(X, kernel(radius, alias_blur))</li>
-<ol>
-	Kernel:
-	<li>Level1: (3, 0.1)</li>
-	<li>Level2: (4, 0.5)</li>
-	<li>Level3: (6, 0.5)</li>
-	<li>Level4: (8, 0.5)</li>
-	<li>Level5: (10, 0.5)</li>
-</ol>
-</ol>
-<li>For the text perturbations, we use the following parameters. Suppose we have a caption X, and the generated noisy caption as X’.</li>
-<ol>
-	<li>Natural Noise: X’ = casing(diacritics(punctuation(spelling(whitespace(word-order(wrong suffix/prefix(X))))))). Natural noise is a mixture of different noisy aspects, and we sample the error rate of each aspect from a random distribution. We can control the overall noisy value by setting the mean of the random distribution. In this project, we use 3 as the mean. </li> 
-</ol>
-</ol>
+ 
+For other image perturbations, we use the following parameters. We list the generation process of a few perturbations below. 
+
+Suppose we have an image X, and the generated noisy image as X’. The variables are used to control the noisy level (1-5), 5 means the noisiest.
+
+*Snow: X’ = X + snow_layer(loc, scale, clip, radius, sigma)
+ 	
+  Snow layer:
+  
+	Level1: (0.1,0.3,3,0.5,10,4,0.8)
+	Level2: (0.2,0.3,2,0.5,12,4,0.7)
+	Level3: (0.55,0.3,4,0.9,12,8,0.7)
+	Level4: (0.55,0.3,4.5,0.85,12,8,0.65)
+	Level5: (0.55,0.3,2.5,0.85,12,12,0.55)
+
+* Zoom: X’ = (X + zoom(zoom factors)) / #zoom factors
+  
+Zoom factors:
+
+	Level1: [1, 1.01, 1.02 … 1.11]
+	Level2: [1, 1.01, 1.02, … 1.16]
+	Level3: [1, 1.02, 1.04, … 1.21]
+	Level4: [1, 1.02, 1.04, … 1.26]
+	Level5: [1, 1.03, 1.06, … 1.33]
+ 
+* Defocus: X’ = defocus(X, kernel(radius, alias_blur))
+
+Kernel:
+
+	Level1: (3, 0.1)
+	Level2: (4, 0.5)
+	Level3: (6, 0.5)
+	Level4: (8, 0.5)
+	Level5: (10, 0.5)
+
+* For the text perturbations, we use the following parameters. Suppose we have a caption X, and the generated noisy caption as X’.
+
+	* Natural Noise: X’ = casing(diacritics(punctuation(spelling(whitespace(word-order(wrong suffix/prefix(X))))))). Natural noise is a mixture of different noisy aspects, and we sample the error rate of each aspect from a random distribution. We can control the overall noisy value by setting the mean of the random distribution. In this project, we use 3 as the mean.
+
 
 
 We cannot list all parameters for the natural noise text [3] and the other perturbations [1] since each requires a complex generation process.
 
 [1]: Qiu, J., Zhu, Y., Shi, X., Wenzel, F., Tang, Z., Zhao, D., Li, B., & Li, M. (2022). Are Multimodal Models Robust to Image and Text Perturbations? ArXiv, abs/2212.08044.
 [2]: Wu, H., Mao, J., Zhang, Y., Jiang, Y., Li, L., Sun, W., & Ma, W. (2019). Unified Visual-Semantic Embeddings: Bridging Vision and Language With Structured Meaning Representations. 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 6602-6611.
-[3]: Jakub N’aplava, Martin Popel, Milan Straka, and Jana Strakov’a. 2021. Under-
-standing Model Robustness to User-generated Noisy Texts. ArXiv abs/2110.07428
-(2021).
+[3]: Jakub N’aplava, Martin Popel, Milan Straka, and Jana Strakov’a. 2021. Under-standing Model Robustness to User-generated Noisy Texts. ArXiv abs/2110.07428(2021).
 
 
 

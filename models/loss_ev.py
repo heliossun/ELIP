@@ -66,7 +66,6 @@ def relu_evidence(y):
 
 
 def exp_evidence(y):
-    #return torch.exp(y)
     return torch.exp(torch.clamp(y, -10, 10))
 
 
@@ -98,17 +97,8 @@ def edl_loss(func, y, alpha, epoch_num, num_classes, annealing_step):
         torch.tensor(1.0, dtype=torch.float32),
         torch.tensor(epoch_num / annealing_step, dtype=torch.float32),
     )
-    #device=alpha.get_device()
-    #print("current epoch:",epoch_num)
-    #print('label:',1-y)
     kl_alpha = (alpha - 1) * (1 - y) + 1
-    #log_target=torch.ones(kl_alpha.shape,dtype=torch.float32, device=device)
-    #kl_loss=F.kl_div(kl_alpha,log_target)
     kl_loss2 = kl_divergence(kl_alpha, num_classes)
-    #print("built in kl loss:",kl_loss)
-    #print('alpha:',alpha)
-    #print('kl alpha:',kl_alpha)
-    #print('manual kl loss: ',kl_loss2)
     kl_div = annealing_coef * kl_loss2
     return A + kl_div
 
@@ -194,16 +184,12 @@ class EVLoss(nn.Module):
         self.prev_num_logits = 0
         self.labels = {}
         self.evidential = evidential
-        #print("world size:",world_size)
     def forward(self, image_features, text_features, logit_scale, epoch_num):
         device = image_features.device
         if self.world_size > 1:
             all_image_features, all_text_features = gather_features(
                 image_features, text_features,
                 self.local_loss, self.gather_with_grad, self.rank, self.world_size, self.use_horovod)
-
-            #print("img has NAN:",all_image_features.isnan().any())
-            #print("text has NAN:",all_text_features.isnan().any())
             if self.local_loss:
                 logits_per_image = logit_scale * image_features @ all_text_features.T
                 logits_per_text = logit_scale * text_features @ all_image_features.T
@@ -215,7 +201,6 @@ class EVLoss(nn.Module):
             logits_per_text = logit_scale * text_features @ image_features.T
 
         # calculated ground-truth and cache if enabled
-        #print(logits_per_image.shape)
         num_logits = logits_per_image.shape[0]
         if self.prev_num_logits != num_logits or device not in self.labels:
             labels = torch.arange(num_logits, device=device, dtype=torch.long)
@@ -229,15 +214,11 @@ class EVLoss(nn.Module):
 
         if self.evidential:
             num_classes = logits_per_image.size(0)
-            total_loss = (edl_digamma_loss(logits_per_image, labels, epoch_num, num_classes , 1000)+
-                        edl_digamma_loss(logits_per_text, labels, epoch_num, num_classes , 1000))/2
+            total_loss = (edl_digamma_loss(logits_per_image, labels, epoch_num, num_classes , 20)+
+                        edl_digamma_loss(logits_per_text, labels, epoch_num, num_classes , 20))/2
         else:
             total_loss = (
                 F.cross_entropy(logits_per_image, labels) +
                 F.cross_entropy(logits_per_text, labels)
                 ) / 2
-        
-
-        #print("ce loss:", total_loss)
-        #print("evidence loss:", evidence_loss)
         return total_loss

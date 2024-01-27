@@ -75,18 +75,14 @@ class ResidualAttentionBlock(nn.Module):
             ("relu", nn.ReLU()),
             ("l2", nn.Linear(d_model // 2, d_model))]
         ))
-        #self.adapter_fc1 = nn.Linear(d_model, d_model)
-        #self.adapter_fc2 = nn.Linear(d_model, d_model)
         self.adapter_atn.apply(self.init_adptr)
         self.adapter_mlp.apply(self.init_adptr)
         self.adptr = adptr
-        #self.apply(self.init_adptr)
     def init_adptr(self, module):
         # reint adapter - small value + bias
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0,
                                        std=0.001)
-            #print(module.weight.grad)
             if module.bias is not None:
                 module.bias.data.zero_()
 
@@ -518,6 +514,4 @@ def elip_retrieval(pretrain_clip='',pretrained='',device='cpu',config=None):
     model = load_elip(pretrain_clip,device,config=config)
     if pretrained:
         model,msg = load_checkpoint(model,pretrained)
-        #print("missing keys:")
-        #print(msg.missing_keys)
     return model 

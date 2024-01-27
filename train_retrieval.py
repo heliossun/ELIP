@@ -43,7 +43,6 @@ def train(model,loss, data_loader, optimizer, epoch, global_step, device, config
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     metric_logger.add_meter('loss', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
-    #metric_logger.add_meter('loss_ita', utils.SmoothedValue(window_size=1, fmt='{value:.4f}'))
     header = 'Train Epoch: [{}]'.format(epoch)
     print_freq = 50
     for i,(image, caption, idx) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
@@ -72,25 +71,13 @@ def train(model,loss, data_loader, optimizer, epoch, global_step, device, config
 
 @torch.no_grad()
 def compute_entropy(scores_i2t, scores_t2i,ranks_i2t,ranks_t2i):
-    #print("i2t shape:",scores_i2t.shape)
-    #print("t2i shape:",scores_t2i.shape)
     class_num=scores_i2t.shape[0]
     
     #generate mask to make 1 image -> 1 text, used to be 1 image for 5 caption
-    # if scores_i2t.shape[0]!=scores_i2t.shape[1]:   
     oneCap4Img=[]
     for i in range(scores_i2t.shape[0]-1):
         randidx=random.randint(0,4)
         oneCap4Img.append(i*5+randidx)
-    #     mask_i2t=np.zeros(scores_i2t.shape)
-    #     mask_t2i=np.zeros(scores_t2i.shape)
-    #     for i in oneCap4Img:
-    #         mask_i2t[:,i]+=1
-    #     for j in np.where(ranks_t2i < 1)[0]:  
-    #         mask_t2i[j]+=1
-    # else:
-    #     mask_i2t=np.ones(scores_i2t.shape)
-    #     mask_t2i=mask_i2t
     
     alpha_i2t=np.exp(scores_i2t*100)+1
     alpha_i2t=alpha_i2t[:,oneCap4Img]
@@ -98,26 +85,18 @@ def compute_entropy(scores_i2t, scores_t2i,ranks_i2t,ranks_t2i):
     alpha_t2i=np.exp(scores_t2i*100)+1
     s_t2i=np.sum(alpha_t2i, axis=1, keepdims=False)
 
-    s_i2t=s_i2t[np.where(ranks_i2t < 5)[0]]
+    s_i2t=s_i2t[np.where(ranks_i2t < 1)[0]]
     
-    s_t2i=s_t2i[np.where(ranks_t2i < 5)[0]]
+    s_t2i=s_t2i[np.where(ranks_t2i < 1)[0]]
     return class_num/np.array(s_i2t), class_num/np.array(s_t2i)
 
 @torch.no_grad()
 def evaluation(model, data_loader, device, config):
-    # test
     model.eval() 
-    
-    #metric_logger = utils.MetricLogger(delimiter="  ")
-    #header = 'Evaluation:'    
-    
     print('Computing features for evaluation...')
-    #start_time = time.time()  
-
     texts = data_loader.dataset.text   
     num_text = len(texts)
     text_bs = 256
-    
     text_embeds = []  
     for i in range(0, num_text, text_bs):
         text = texts[i: min(num_text, i+text_bs)]
@@ -125,28 +104,21 @@ def evaluation(model, data_loader, device, config):
         text_embed = model.encode_text(text) 
         text_embed /= text_embed.norm(dim=-1, keepdim=True)
         text_embeds.append(text_embed)   
-        
-    
     text_embeds = torch.cat(text_embeds,dim=0)
-   
     image_embeds = []
     for image, img_id in data_loader: 
         image = image.to(device) 
         image_embed = model.encode_image(image)         
         image_embed /= image_embed.norm(dim=-1, keepdim=True)
-        image_embeds.append(image_embed)
-   
+        image_embeds.append(image_embed)  
     image_embeds = torch.cat(image_embeds,dim=0)
-    
     sims_i2t = image_embeds @ text_embeds.t()
     sims_t2i = text_embeds @ image_embeds.t()
     return sims_i2t.cpu().numpy(), sims_t2i.cpu().numpy()
 
 @torch.no_grad()
-def oodEval(model_without_ddp, device, OODS):
-     for noise in OODS: 
-        train_dataset, val_dataset, test_dataset = create_dataset('retrieval_%s'%config['dataset'], config, noise=noise)  
-
+def oodEval(model_without_ddp, device, text_noises, image_noises):
+    def one_eval(train_dataset, val_dataset, test_dataset):
         if args.distributed:
             num_tasks = utils.get_world_size()
             global_rank = utils.get_rank()            
@@ -163,7 +135,7 @@ def oodEval(model_without_ddp, device, OODS):
         if utils.is_main_process():  
             val_result,u_i2t,u_t2i,top1_i2t,top1_t2i = itm_eval(score_val_i2t, score_val_t2i, val_loader.dataset.txt2img, val_loader.dataset.img2txt,val_loader)  
             
-            print(val_result)              
+            print("current noise: ",noise, val_result)              
             log_stats = {**{f'val_{k}': v for k, v in val_result.items()},}
             with open(os.path.join(args.output_dir, "evaluate.txt"),"a") as f:
                 f.write(json.dumps(log_stats) + "\n")     
@@ -183,6 +155,17 @@ def oodEval(model_without_ddp, device, OODS):
             for i in top1_t2i:
                 f.write(f'{i}\n')
             f.close()    
+    
+    for noise in image_noises: 
+        "<<<<<evaluating image noises>>>>>"
+        train_dataset, val_dataset, test_dataset = create_dataset('retrieval_%s'%config['dataset'], config, 
+                                                                  text_noise= 'clean', img_noise= noise)  
+        one_eval(train_dataset, val_dataset, test_dataset)
+    # for noise in text_noises: 
+    #     "<<<<<evaluating text noises>>>>>"
+    #     train_dataset, val_dataset, test_dataset = create_dataset('retrieval_%s'%config['dataset'], config, 
+    #                                                               text_noise= noise, img_noise= 'clean')  
+    #     one_eval(train_dataset, val_dataset, test_dataset)
 
 @torch.no_grad()
 def itm_eval(scores_i2t, scores_t2i, txt2img, img2txt, data_loader):
@@ -274,17 +257,13 @@ def main(args, config):
     train_params=0
     freeze_params=0
     unfreeze=['adapter']
-    #unfreeze=['text_projection','visual.proj']
     for name, param in model.named_parameters():
         if any(n in name for n in unfreeze):
-            #print("unfreeze",name)
             param.requires_grad=True
             train_params+=param.numel()
         else:
-            #print("freeze",name)
             freeze_params+=param.numel()
             param.requires_grad=False
-    #print("trainable parameters: ", train_params, " freeze params: ",freeze_params)
     log_stats = { '"trainable parameters': train_params,'freeze params': freeze_params,}
     with open(os.path.join(args.output_dir, "log.txt"),"a") as f:
         f.write(json.dumps(log_stats) + "\n")   
@@ -325,9 +304,7 @@ def main(args, config):
                     }
                     torch.save(save_obj, os.path.join(args.output_dir, 'checkpoint_best.pth'))  
                     best = val_result['r_mean']        
-                    best_epoch = epoch  
-    
-                
+                    best_epoch = epoch             
                 if args.evaluate:                
                     log_stats = {**{f'val_{k}': v for k, v in val_result.items()},                
                                 }
@@ -344,8 +321,10 @@ def main(args, config):
                        
         if args.evaluate: 
             print(">>>Evaluating ID & OOD cases<<<")
-            noises=['c','g','r']
-            oodEval(model_without_ddp,device,noises)
+            text_noises=['formal']
+            img_noises=['jpeg','snow','zoom-blur']
+            #img_noises=['clean']
+            oodEval(model_without_ddp,device,text_noises,img_noises)
             break
 
         dist.barrier()     

@@ -2,16 +2,16 @@
 # NOTE the -l flag!
 #
 
-#SBATCH --job-name=ELIP-flk-noev
+#SBATCH --job-name=ELIP-nev
 #SBATCH --error=/home/gs4288/guohao/ELIP/RC_error/err_%j.txt
 #SBATCH --output=/home/gs4288/guohao/ELIP/RC_out/out_%j.txt
 #SBATCH --ntasks 1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=10
-#SBATCH --time=00-10:00:00
+#SBATCH --time=00-15:00:00
 #SBATCH --partition tier3
 #SBATCH --gpus-per-node=a100:4
-#SBATCH --mem=60g
+#SBATCH --mem=64g
 #SBATCH --account=crossmodal
 #SBATCH --partition=tier3
 
@@ -19,4 +19,8 @@
 source ~/conda/etc/profile.d/conda.sh
 conda activate elip-td
 
-srun python -m torch.distributed.run --nproc_per_node=4 /home/gs4288/guohao/ELIP/train_retrieval.py --config /home/gs4288/guohao/ELIP/configs/retrieval_flickr_elip.yaml --output_dir /home/gs4288/guohao/ELIP/output/ELIP-fk-noev
+srun python -m torch.distributed.run --nproc_per_node=4 \
+/home/gs4288/guohao/ELIP/train_retrieval.py \
+--config /home/gs4288/guohao/ELIP/configs/retrieval_coco_finetune-noEV.yaml \
+--output_dir /home/gs4288/guohao/ELIP/output/ELIP-nev5 \
+--seed 255

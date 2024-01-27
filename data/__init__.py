@@ -23,38 +23,40 @@ class AddGaussianNoise(object):
     def __repr__(self):
         return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
 
-def create_dataset(dataset, config, min_scale=0.5,noise='c'):
+def create_dataset(dataset, config, min_scale=0.5,text_noise = 'clean',img_noise='clean',level='1'):
     
     normalize = transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
 
-    transform_train = transforms.Compose([                        
+    transform_train = transforms.Compose([
             transforms.RandomResizedCrop(config['image_size'],scale=(min_scale, 1.0),interpolation=InterpolationMode.BICUBIC),
             transforms.RandomHorizontalFlip(),
             RandomAugment(2,5,isPIL=True,augs=['Identity','AutoContrast','Brightness','Sharpness','Equalize',
-                                              'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Rotate']),     
+                                              'ShearX', 'ShearY', 'TranslateX', 'TranslateY', 'Rotate']),
             transforms.ToTensor(),
             normalize,
-        ])        
-    if noise =='c':
+        ])
+
+    if img_noise == 'c':
         transform_test = transforms.Compose([
-            transforms.Resize((config['image_size'],config['image_size']),interpolation=InterpolationMode.BICUBIC),
+            transforms.Resize((config['image_size'], config['image_size']), interpolation=InterpolationMode.BICUBIC),
             transforms.ToTensor(),
             normalize,
-            ])  
-    elif noise == 'g':
+        ])
+    elif img_noise == 'g':
         transform_test = transforms.Compose([
-            transforms.Resize((config['image_size'],config['image_size']),interpolation=InterpolationMode.BICUBIC),
+            transforms.Resize((config['image_size'], config['image_size']), interpolation=InterpolationMode.BICUBIC),
             transforms.ToTensor(),
-            AddGaussianNoise(0,0.1),
+            AddGaussianNoise(0, 0.1),
             normalize,
-            ])  
+        ])
     else:
         transform_test = transforms.Compose([
-            transforms.Resize((config['image_size'],config['image_size']),interpolation=InterpolationMode.BICUBIC),
+            transforms.Resize((config['image_size'], config['image_size']), interpolation=InterpolationMode.BICUBIC),
             transforms.ToTensor(),
             transforms.RandomRotation(degrees=(0, 180)),
             normalize,
-            ]) 
+        ])
+
     if dataset=='pretrain':
         dataset = pretrain_dataset(config['train_file'], config['laion_path'], transform_train)              
         return dataset  
@@ -72,8 +74,8 @@ def create_dataset(dataset, config, min_scale=0.5,noise='c'):
     
     elif dataset=='retrieval_coco':          
         train_dataset = coco_karpathy_train(transform_train, config['image_root'], config['ann_root'])
-        val_dataset = coco_karpathy_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'test') 
-        test_dataset = coco_karpathy_retrieval_eval(transform_test, config['image_root'], config['ann_root'], 'test')     
+        val_dataset = coco_karpathy_retrieval_eval(transform_test, config['image_root'], config['ann_root'], text_noise, img_noise,level=level) 
+        test_dataset = coco_karpathy_retrieval_eval(transform_test, config['image_root'], config['ann_root'],  text_noise, img_noise,level=level)     
         return train_dataset, val_dataset, test_dataset  
       
     

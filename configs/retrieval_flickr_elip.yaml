@@ -1,10 +1,11 @@
-image_root: '/home/gs4288/guohao/data/Flickr'
-ann_root: '/home/gs4288/guohao/data/Flickr/annotations'
+image_root: '/path/to/Flickr'
+ann_root: '/path/to/Flickr/annotations'
 dataset: 'flickr'
 
+
 # set pretrained as a file path or an url
-# /home/gs4288/guohao/ELIP/output/elip-L-4gpu/checkpoint_best.pth
-pretrained: '/home/gs4288/guohao/ELIP/output/ELIP-fk/checkpoint_best.pth'
+#output/ELIP-L-noGC/checkpoint_best.pth
+pretrained: '/path/to/ELIP/output/ckpt/model_base_retrieval_coco.pth'
 pretrain_clip: 'ViT-L/14'
 # size of vit model; base or large
 

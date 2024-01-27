@@ -31,4 +31,4 @@ echo "MASTER_ADDR="$MASTER_ADDR
 source ~/conda/etc/profile.d/conda.sh
 conda activate elip-td
 
-srun python -m torch.distributed.run --nproc_per_node=4 /home/gs4288/guohao/ELIP/train_BLIP_retrieval.py --config /home/gs4288/guohao/ELIP/configs/retrieval_blip_noEv.yaml --output_dir /home/gs4288/guohao/ELIP/output/Bp-noEV
+srun python -m torch.distributed.run --nproc_per_node=4 /home/gs4288/guohao/ELIP/train_BLIP_retrieval.py --config /home/gs4288/guohao/ELIP/configs/retrieval_blip.yaml --output_dir /home/gs4288/guohao/ELIP/output/ELIP+(NIPS)

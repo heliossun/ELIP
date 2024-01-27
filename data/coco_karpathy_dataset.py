@@ -83,7 +83,7 @@ class coco_karpathy_caption_eval(Dataset):
     
     
 class coco_karpathy_retrieval_eval(Dataset):
-    def __init__(self, transform, image_root, ann_root, split, max_words=30):  
+    def __init__(self, transform, image_root, ann_root, text_noise = "clean",noise='clean', level='1',max_words=30):
         '''
         image_root (string): Root directory of images (e.g. coco/images/)
         ann_root (string): directory to store the annotation file
@@ -91,35 +91,41 @@ class coco_karpathy_retrieval_eval(Dataset):
         '''
         urls = {'val':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_val.json',
                 'test':'https://storage.googleapis.com/sfr-vision-language-research/datasets/coco_karpathy_test.json'}
-        filenames = {'val':'coco_karpathy_val.json','test':'coco_karpathy_test.json'}
+        self.filenames = {'clean':'coco_karpathy_test.json', 'natural': 'coco_karpathy_test_a3.json','sr':'sr/5/coco_karpathy_test.json','keyboard':'KeyboardAug/5/coco_karpathy_test.json','formal':'formal/5/coco_karpathy_test.json'}
         
         #download_url(urls[split],ann_root)
         
-        self.annotation = json.load(open(os.path.join(ann_root,filenames[split]),'r'))
+        self.annotation = json.load(open(os.path.join(ann_root,self.filenames[text_noise]),'r'))
         self.transform = transform
         self.image_root = image_root
-        
+        self.level=level
         self.text = []
         self.image = []
         self.txt2img = {}
         self.img2txt = {}
-        
+        self.noise = noise
+        self.simple_imageood = ['c','g','r']
         txt_id = 0
         for img_id, ann in enumerate(self.annotation):
             self.image.append(ann['image'])
             self.img2txt[img_id] = []
-            for i, caption in enumerate(ann['caption']):
+            for i, caption in enumerate(ann['caption'][:5]):
+                if type(caption) == list:
+                    caption = caption[0]
                 self.text.append(pre_caption(caption,max_words))
                 self.img2txt[img_id].append(txt_id)
                 self.txt2img[txt_id] = img_id
                 txt_id += 1
-                                    
+        #print("number of images:",len(self.image),len(self.img2txt) )
+        #print("number of text:", len(self.text),len(self.txt2img))
     def __len__(self):
         return len(self.annotation)
     
-    def __getitem__(self, index):    
-        
-        image_path = os.path.join(self.image_root, self.annotation[index]['image'])        
+    def __getitem__(self, index):  
+        img_path = self.annotation[index]['image']  
+        if self.noise not in self.simple_imageood:
+            img_path = f"oodimages/COCO_IP_{self.noise}_noise_{self.level}" + self.annotation[index]['image'][7:]
+        image_path = os.path.join(self.image_root, img_path)        
         image = Image.open(image_path).convert('RGB')    
         image = self.transform(image)  
 

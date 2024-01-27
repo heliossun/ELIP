@@ -1,13 +1,11 @@
-image_root: '/home/gs4288/guohao/data/coco2014/images'
-image_root2017_val: '/home/gs4288/guohao/data/coco/images/val2017'
-image_root2017_train: '/home/gs4288/guohao/data/coco/images/train2017'
-ann_root2017: '/home/gs4288/guohao/data/coco/annotations'
-ann_root: '/home/gs4288/guohao/data/coco2014/annotations'
+image_root: '/path/to/coco2014/images'
+ann_root: '/path/to/coco2014/annotations'
 dataset: 'coco'
 
+
 # set pretrained as a file path or an url
-# /home/gs4288/guohao/ELIP/output/ELIP-5e-5/checkpoint_best.pth
-pretrained: '/home/gs4288/guohao/ELIP/output/ELIP-5e-5/checkpoint_best.pth'
+
+pretrained: '/checkpoints/ELIP/output/checkpoint_best.pth'
 pretrain_clip: 'ViT-L/14'
 # size of vit model; base or large
 

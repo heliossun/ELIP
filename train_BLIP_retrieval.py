@@ -336,6 +336,7 @@ def main(args, config):
                 freeze_params+=param.numel()
                 param.requires_grad=False
     log_stats = { '"trainable parameters': train_params,'freeze params': freeze_params,}
+    print('trainable parameters', train_params,'freeze params', freeze_params)
     with open(os.path.join(args.output_dir, "log.txt"),"a") as f:
         f.write(json.dumps(log_stats) + "\n") 
     model = model.to(device)   

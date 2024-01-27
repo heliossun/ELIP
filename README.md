@@ -8,7 +8,7 @@ Evidential Language-Image Posterior (ELIP) achieves robust alignment between web
 
 ## Approach
 
-![ELIP](ELIP.pdf)
+![ELIP](ELIP.png)
 
 
 

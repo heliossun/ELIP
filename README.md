@@ -68,10 +68,14 @@ python -m torch.distributed.run --nproc_per_node=4 \
 
 
 ## Citation
-
 If you find this code to be useful for your research, please consider citing.
 ```bash
-
+@inproceedings{ELIP,
+  title={Aligning Out-of-Distribution Web Images and Caption Semantics via Evidential Learning},
+  author={Guohao Sun and Yue Bai and Xueying Yang and Yi Fang and Yun Fu and Zhiqiang Tao},
+  booktitle = {ACM Web Conference},
+  year={2024},
+}
 ```
 
 ## Acknowledgement

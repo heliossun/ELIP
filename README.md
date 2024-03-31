@@ -1,7 +1,7 @@
 
 # ELIP
 
-[[[Paper]]() [[Model Card]](model-card.md) 
+[Paper]()
 
 Evidential Language-Image Posterior (ELIP) achieves robust alignment between web images and semantic knowledge across various OOD cases by leveraging evidential uncertainties. The proposed ELIP can be seamlessly integrated into general image-text contrastive learning frameworks, providing an efficient fine-tuning approach without exacerbating the need for additional data. 
  
